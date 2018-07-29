@@ -1,3 +1,4 @@
+#include <mach-o/nlist.h>
 #include "../includes/ft_nm.h"
 #include "../includes/errors.h"
 
@@ -15,31 +16,42 @@ void print_output(int syms, int symoff, int stroff, char *ptr)
 	}
 }
 
-void handle_64(char *ptr)
+void handle_symtab(struct obj_info *obj, void *ptr)
 {
-	int			ncmds;
-	int			i;
-	struct mach_header_64	*header;
-	struct load_command	*lc;
-	struct symtab_command	*sym;
-	
-	header = (struct mach_header_64 *)ptr;
-	ncmds = header->ncmds;
+	char *str;
 
-	lc = (void *)ptr + sizeof(*header);
-	for (i = 0; i < ncmds; ++i)
-	{
-		if (lc->cmd == LC_SYMTAB)
-		{
-			sym = (struct symtab_command*)lc;
-			printf("nb symboles %d\n", sym->nsyms);
-			print_output(sym->nsyms, sym->symoff, sym->stroff, ptr);
-			break ;
-		}
-		lc = (void *)lc + lc->cmdsize;
-	}
-	
+	obj->x86_64o.el = ptr + obj->x86_64o.sym->symoff;
+	str = ptr + obj->x86_64o.sym->stroff;
+
+	printf("%d\n", obj->x86_64o.sym->nsyms);
+	printf("%s\n", str + obj->x86_64o.el[0].n_un.n_strx);
+
 }
+
+void handle_64(char *ptr, struct obj_info *obj)
+{
+	int i = -1;
+
+	while (++i < obj->x86_64o.ncmds)
+	{
+		obj->x86_64o.lc = (void *)obj->x86_64o.lc +
+				obj->x86_64o.lc->cmdsize;
+
+		if (obj->x86_64o.lc->cmd == LC_SYMTAB)
+		{
+			obj->x86_64o.sym = (struct symtab_command *)obj->x86_64o.lc;
+			handle_symtab(obj, ptr);
+			printf("LC_SYMTAB\n");
+		}
+		else if (obj->x86_64o.lc->cmd == LC_SEGMENT_64)
+		{
+		//	obj->x86_64o.seg = (struct segment_command_64 *)obj->x86_64o.lc;
+		//	handle_segment_command(format, seg, is_64);
+			printf("LC_SEGMENT\n");
+		}
+	}
+}
+
 
 int get_file(char *file, struct obj_info *obj)
 {
@@ -68,15 +80,28 @@ int set_arch(void *ptr)
 	magic_number = *(int *)ptr;
 
 	if (magic_number == MH_MAGIC_64)
-	{
-        return x86_64;
-	}
+		return x86_64;
+	else if (magic_number == MH_MAGIC)
+		return x86;
+	else
+		return UNKNOWN;
+}
+
+void handle_x86_arch(void *ptr, struct obj_info *obj)
+{
+	printf("x86 obj proceed");
 }
 
 
-void handle_x86_64_arch(void *ptr)
+void handle_x86_64_arch(void *ptr, struct obj_info *obj)
 {
-    handle_64(ptr);
+	obj->x86_64o.header = (struct mach_header_64 *)ptr;
+	obj->x86_64o.ncmds = obj->x86_64o.header->ncmds;
+	obj->x86_64o.sizeofcmds = obj->x86_64o.header->sizeofcmds;
+
+	obj->x86_64o.lc = ptr + sizeof(*(obj->x86_64o.header));
+
+	handle_64(ptr, obj);
 }
 
 int get_info(struct obj_info *obj)
@@ -88,14 +113,24 @@ int get_info(struct obj_info *obj)
 		return (nm_error(obj->name, ENOMEM));
 
 	obj->obj_ptr = ptr;
-    obj->arch = set_arch(ptr);
+	obj->handle_arch_clbk[set_arch(ptr)](ptr, obj);
+
 	return 0;
+}
+
+void arch_miss(void)
+{
+	printf("Unsuported arch\n");
 }
 
 int main(int argc, char **argv)
 {
-	struct obj_info obj;
 	int iter = 0;
+	struct obj_info obj;
+
+	obj.handle_arch_clbk[x86] = handle_x86_arch;
+	obj.handle_arch_clbk[x86_64] = handle_x86_64_arch;
+	obj.handle_arch_clbk[UNKNOWN] = arch_miss;
 
 	if (argc == 1)
 	{
@@ -118,9 +153,8 @@ int main(int argc, char **argv)
 
 		if (get_info(&obj) < 0)
 			continue ;
-        //if (print_info) < 0)
+        //if (print_info(obj) < 0)
         // continue ;
-		printf("%s\n", argv[iter]);
 	}
 
 	return 0;
