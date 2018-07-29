@@ -5,6 +5,8 @@
 #include <sys/mman.h>
 #include <mach-o/loader.h>
 #include <mach-o/nlist.h>
+#include <mach-o/fat.h>
+#include <mach-o/ranlib.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <stdlib.h>
@@ -16,6 +18,7 @@ enum FILE_ARCH
 {
 	x86,
 	x86_64,
+	FAT,
 	UNKNOWN
 };
 
@@ -52,7 +55,7 @@ struct obj_info
 	struct stat			buf;
 	struct obj_x86		x86o;
 	struct obj_x86_64	x86_64o;
-	void (*handle_arch_clbk[3])(void *ptr, struct obj_info *obj);
+	void (*handle_arch_clbk[4])(void *ptr, struct obj_info *obj);
 };
 
 void ft_putchar(char c);

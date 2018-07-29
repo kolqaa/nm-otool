@@ -76,15 +76,18 @@ int get_file(char *file, struct obj_info *obj)
 
 int set_arch(void *ptr)
 {
-	int magic_number;
-	magic_number = *(int *)ptr;
+	uint32_t  magic_number;
+	magic_number = *(uint32_t *)ptr;
 
-	if (magic_number == MH_MAGIC_64)
-		return x86_64;
-	else if (magic_number == MH_MAGIC)
-		return x86;
+	printf("@@@@@@@@@@@@ [%x]\n", magic_number);
+	if (magic_number == MH_MAGIC || magic_number == MH_CIGAM)
+		return (x86);
+	else if (magic_number == MH_MAGIC_64 || magic_number == MH_CIGAM_64)
+		return (x86_64);
+	else if (magic_number == FAT_MAGIC || magic_number == FAT_CIGAM)
+		return (FAT);
 	else
-		return UNKNOWN;
+		return (UNKNOWN);
 }
 
 void handle_x86_arch(void *ptr, struct obj_info *obj)
@@ -118,7 +121,13 @@ int get_info(struct obj_info *obj)
 	return 0;
 }
 
-void arch_miss(void)
+void handle_fat(void *ptr, struct obj_info *obj)
+{
+	printf("FAT arch");
+}
+
+
+void arch_miss(void *ptr, struct obj_info *obj)
 {
 	printf("Unsuported arch\n");
 }
@@ -130,6 +139,7 @@ int main(int argc, char **argv)
 
 	obj.handle_arch_clbk[x86] = handle_x86_arch;
 	obj.handle_arch_clbk[x86_64] = handle_x86_64_arch;
+	obj.handle_arch_clbk[FAT] = handle_fat;
 	obj.handle_arch_clbk[UNKNOWN] = arch_miss;
 
 	if (argc == 1)
