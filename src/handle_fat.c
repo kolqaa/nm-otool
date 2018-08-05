@@ -15,16 +15,17 @@ uint32_t	endianness(uint32_t value)
 
 void		handle_fat(void *ptr, t_macho *macho)
 {
-	struct fat_header	*fat;
-	struct fat_arch		*arch;
 	int					narch;
 	int					i;
 	uint32_t			offset;
+	struct fat_header	*fat;
+	struct fat_arch		*arch;
 
 	i = 0;
 	fat = (struct fat_header *)macho->obj_ptr;
 	arch = (void *)fat + sizeof(fat);
 	narch = endianness(fat->nfat_arch);
+	macho->fat = 1;
 	while (i < narch)
 	{
 		if (endianness(arch->cputype) == CPU_TYPE_X86_64)
@@ -32,6 +33,7 @@ void		handle_fat(void *ptr, t_macho *macho)
 		arch = (void *)arch + sizeof(*arch);
 		i++;
 	}
-	printf("Here\n");
-	macho->handle_arch[set_arch(ptr + offset)](ptr + offset, macho);
+
+	macho->handle_arch[set_arch(ptr + offset, macho->name,macho)](ptr +
+																  offset, macho);
 }

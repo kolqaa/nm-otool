@@ -1,87 +1,82 @@
 #include "../includes/ft_nm.h"
+#include "../includes/errors.h"
 
 
-int		add_section2_32(t_macho *macho)
+int		add_segment32_help(t_macho *macho)
 {
-	t_sect				*sec;
-	t_sect				*sec2;
+	t_segment_info		*seg;
+	t_segment_info		*tmp_seg;
 	struct section		*section;
 
-	sec2 = macho->x86o.list;
+	tmp_seg = macho->x86o.seg_info;
 	section = macho->x86o.sect;
-	if ((sec = (t_sect *)malloc(sizeof(t_sect))) == NULL)
-		return -1;
-	sec->name = strdup(section->sectname);
-	sec->next = NULL;
-	if (macho->x86o.list)
+	if ((seg = (t_segment_info *)malloc(sizeof(t_segment_info))) == NULL)
+		return (nm_error(macho->name, ENOMEM));
+	seg->name = ft_strdup(section->sectname);
+	seg->next = NULL;
+	if (macho->x86o.seg_info)
 	{
-		while (sec2->next)
-			sec2 = sec2->next;
-		sec->sect_nbr = sec2->sect_nbr + 1;
-		sec2->next = sec;
+		//FIND_SEGMENT(tmp_seg);
+		while(seg->next)
+			seg = seg->next;
+		seg->s_num = tmp_seg->s_num + 1;
+		tmp_seg->next = seg;
 	}
 	else
 	{
-		sec->sect_nbr = 1;
-		macho->x86o.list = sec;
+		seg->s_num = 1;
+		macho->x86o.seg_info = seg;
 	}
 	return (0);
 }
 
-int		add_section_32(void *lc, t_macho *macho)
+int		add_segment32_node(void *lc, t_macho *macho)
 {
 	int							i;
-	int							nsects;
-	struct segment_command		*seg;
-	struct section				*sec;
 
 	i = 0;
-	seg = lc;
-	nsects = seg->nsects;
-	sec = (void *)seg + sizeof(*seg);
-
 	macho->x86o.seg = lc;
-	macho->x86o.nsects = nsects;
-	macho->x86o.sect = sec;
-	while (i < nsects)
+	macho->x86o.nsects = macho->x86o.seg->nsects;
+	macho->x86o.sect = (void*)macho->x86o.seg + sizeof(*(macho->x86o.seg));
+	while (i < macho->x86o.nsects)
 	{
-		if (add_section2_32(macho) == -1)
+		if (add_segment32_help(macho) == -1)
 			return (-1);
-		sec = (void *)sec + sizeof(*sec);
+		macho->x86o.sect = (void *)macho->x86o.sect + sizeof(*(macho->x86o.sect));
 		i++;
 	}
 	return (0);
 }
 
-int		add_elem2_32(void *ptr, char *str, t_macho *macho)
+int		add_symtab32_help(void *ptr, char *str, t_macho *macho)
 {
-	t_file			*tmp;
-	struct nlist	array;
+	t_macho_info	*tmp;
+	struct nlist	el;
 
-	array = *(struct nlist *)ptr;
-	if (get_type(array.n_type, array.n_sect, macho) == '?'
-		|| !strlen(str + array.n_un.n_strx))
+	el = *(struct nlist *)ptr;
+	if (get_type(el.n_type, el.n_sect, macho) == '?'
+		|| !ft_strlen(str + el.n_un.n_strx))
 		return (0);
-	if ((tmp = (t_file *)malloc(sizeof(t_file))) == NULL)
-		return -1;
-	tmp->name = strdup(str + array.n_un.n_strx);
-	tmp->type = get_type(array.n_type, array.n_sect, macho);
+	if ((tmp = (t_macho_info *)malloc(sizeof(t_macho_info))) == NULL)
+		return (nm_error(macho->name, ENOMEM));
+	tmp->name = ft_strdup(str + el.n_un.n_strx);
+	tmp->type = get_type(el.n_type, el.n_sect, macho);
 	tmp->value = 0;
-	if (array.n_value)
-		tmp->value = (unsigned long)array.n_value;
-	tmp->show_addr = 0;
-	if ((array.n_type & N_TYPE) != N_UNDF)
-		tmp->show_addr = 1;
-	tmp->arch = 32;
+	if (el.n_value)
+		tmp->value = (unsigned long)el.n_value;
+	tmp->displayable = 0;
+	if (SYM_DISPLAYABLE(el))
+		tmp->displayable = 1;
+	tmp->arch = x86;
 	tmp->next = NULL;
-	if (macho->x86o.file)
-		sort_list(&macho->x86o.file, tmp);
+	if (macho->x86o.obj)
+		sort_list(&macho->x86o.obj, tmp);
 	else
-		macho->x86o.file = tmp;
+		macho->x86o.obj = tmp;
 	return (0);
 }
 
-int		add_elem_32(void *ptr, t_macho *macho)
+int		add_symtab32_node(void *ptr, t_macho *macho)
 {
 	int						i;
 	char					*str;
@@ -91,7 +86,7 @@ int		add_elem_32(void *ptr, t_macho *macho)
 	str = ptr + macho->x86o.sym->stroff;
 	while (i < (int)macho->x86o.sym->nsyms)
 	{
-		if (add_elem2_32(&macho->x86o.el[i], str, macho) == -1)
+		if (add_symtab32_help(&macho->x86o.el[i], str, macho) == -1)
 			return (-1);
 		i++;
 	}
@@ -110,14 +105,14 @@ void handle_x86_arch(void *ptr, t_macho *macho)
 	{
 		if (macho->x86o.lc->cmd == LC_SEGMENT)
 		{
-			if (add_section_32(macho->x86o.lc, macho) == -1)
+			if (add_segment32_node(macho->x86o.lc, macho) == -1)
 				return ;
 		}
 
 		if (macho->x86o.lc->cmd == LC_SYMTAB)
 		{
 			macho->x86o.sym = (struct symtab_command *)macho->x86o.lc;
-			if (add_elem_32(ptr, macho) == -1)
+			if (add_symtab32_node(ptr, macho) == -1)
 				return ;
 			break ;
 		}
@@ -126,6 +121,5 @@ void handle_x86_arch(void *ptr, t_macho *macho)
 		i++;
 	}
 
-
-	print_file(macho, x86);
+	display_nm(macho, x86);
 }

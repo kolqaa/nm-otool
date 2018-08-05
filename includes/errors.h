@@ -1,6 +1,3 @@
-//
-// Created by NickS on 29.07.18.
-//
 
 #ifndef ERRORS_H
 #define ERRORS_H
@@ -10,16 +7,16 @@
 #define	FSTAT_ERR	"Fstat error.\n"
 #define	OPEN_ERR	"Can't open file.\n"
 #define	EMPTY_ERR	"File is empty.\n"
-#define MMAP_ERR	"Failed to mmap file\n"
+#define MMAP_ERR	"Failed to allocate memory\n"
 
 enum NM_ERROR_CODES
 {
     EISDIR =		-101,
-    ENOEXEC =	-102,
+    ENOEXEC =		-102,
     EINVAL_FSTAT =	-103,
     EINVAL_OPEN =	-104,
-    EISEMPTY =	-105,
-    ENOMEM =	-106
+    EISEMPTY =		-105,
+    ENOMEM =		-106
 };
 
 struct NM_ERR

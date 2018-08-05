@@ -4,7 +4,6 @@
 #include <string.h>
 #include <ctype.h>
 
-
 int get_file(char *file, t_macho *macho)
 {
 	macho->name = file;
@@ -26,25 +25,19 @@ int get_file(char *file, t_macho *macho)
 		return (nm_error(macho->name, EISDIR));
 }
 
-int set_arch(void *ptr)
+int set_arch(void *ptr, char *name, t_macho *macho)
 {
 	uint32_t  magic_number;
 	magic_number = *(uint32_t *)ptr;
 
-	if (magic_number == MH_MAGIC || magic_number == MH_CIGAM) {
-		printf("X86 binary\n");
-		return (x86);
-	}
-	else if (magic_number == MH_MAGIC_64 || magic_number == MH_CIGAM_64) {
-		printf("x664 binary\n");
-		return (x86_64);
-	}
-	else if (magic_number == FAT_MAGIC || magic_number == FAT_CIGAM) {
-		printf("FAT binary\n");
+	if (magic_number == MH_MAGIC || magic_number == MH_CIGAM)
+		return ((macho->arch = x86), x86);
+	else if (magic_number == MH_MAGIC_64 || magic_number == MH_CIGAM_64)
+		return ((macho->arch = x86_64), x86_64);
+	else if (magic_number == FAT_MAGIC || magic_number == FAT_CIGAM)
 		return (FAT);
-	}
 	else
-		return (UNKNOWN);
+		exit(nm_error(name, ENOEXEC));
 }
 
 
@@ -58,63 +51,28 @@ int mmap_obj(t_macho *macho)
 		return (nm_error(macho->name, ENOMEM));
 
 	macho->obj_ptr = ptr;
-	macho->handle_arch[set_arch(ptr)](ptr, macho);
+	macho->handle_arch[set_arch(ptr, macho->name, macho)](ptr, macho);
 
 	return 0;
 }
 
 void init(t_macho *obj)
 {
+	const unsigned char *ch_types =  (unsigned char *)"abditus?";
+
 	obj->handle_arch[x86] = handle_x86_arch;
 	obj->handle_arch[x86_64] = handle_x86_64_arch;
 	obj->handle_arch[FAT] = handle_fat;
-	//macho->handle_arch[UNKNOWN] = arch_miss;
-	obj->x86_64o.list = NULL;
-	obj->x86_64o.file = NULL;
-	obj->x86o.list = NULL;
-	obj->x86_64o.file = NULL;
+
+	obj->x86_64o.seg_info = NULL;
+	obj->x86_64o.obj = NULL;
+	obj->x86o.seg_info = NULL;
+	obj->x86_64o.obj = NULL;
 	obj->args_num = 0;
+	obj->fat = 0;
+	obj->type_charests = ch_types;
 }
 
-void	free_file(t_file *file)
-{
-	while (file)
-	{
-		free(file->name);
-		free(file);
-		file = file->next;
-	}
-}
-
-void	free_sect(t_sect *sect)
-{
-	while (sect)
-	{
-		free(sect->name);
-		free(sect);
-		sect = sect->next;
-	}
-}
-
-void reinit_obj(t_macho *macho)
-{
-	close(macho->fd);
-	munmap(macho->obj_ptr, macho->ptr_size);
-	if(macho->x86_64o.list)
-		free_sect(macho->x86_64o.list);
-	if (macho->x86_64o.file)
-		free_file(macho->x86_64o.file);
-
-	if (macho->x86o.list)
-		free_sect(macho->x86o.list);
-	if (macho->x86o.file)
-		free_file(macho->x86o.file);
-
-	macho->x86_64o.list = NULL;
-	macho->x86_64o.file = NULL;
-	macho->x86o.file = NULL;
-	macho->x86o.list = NULL;
-}
 
 int with_args(int argc, char **argv, t_macho *macho)
 {

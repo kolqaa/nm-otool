@@ -14,11 +14,12 @@ CFLAGS = -Wall -Wextra -Werror $(INCLUDES)
 SRC_NM =	$(SRC)main.c \
 		$(SRC)errors.c \
 		$(SRC)print_functions.c \
-		$(SRC)sort_list.c \
-		$(SRC)list_data.c \
+		$(SRC)list_functions.c \
+		$(SRC)section_types.c \
 		$(SRC)handle_x86_64.c \
 		$(SRC)handle_fat.c \
-		$(SRC)handle_x86.c 
+		$(SRC)handle_x86.c \
+		$(SRC)common.c
 
 all: $(NAME_NM)
 

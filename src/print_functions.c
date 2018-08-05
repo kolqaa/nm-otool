@@ -1,6 +1,48 @@
 #include "../includes/ft_nm.h"
 
-unsigned long	ft_ullen(unsigned long n)
+int		ft_strcmp(const char *s1, const char *s2)
+{
+	int					i;
+	unsigned char		*tmp1;
+	unsigned char		*tmp2;
+
+	i = 0;
+	tmp1 = (unsigned char *)s1;
+	tmp2 = (unsigned char *)s2;
+	if (tmp1 == NULL || tmp2 == NULL)
+		return (0);
+	while (tmp1[i] && tmp2[i])
+	{
+		if (tmp1[i] != tmp2[i])
+			return (tmp1[i] - tmp2[i]);
+		i++;
+	}
+	return (tmp1[i] - tmp2[i]);
+}
+
+int		ft_strncmp(const char *s1, const char *s2, size_t n)
+{
+	size_t				i;
+	unsigned char		*tmp1;
+	unsigned char		*tmp2;
+
+	i = 0;
+	tmp1 = (unsigned char *)s1;
+	tmp2 = (unsigned char *)s2;
+	if (n == 0 || tmp1 == NULL || tmp2 == NULL)
+		return (0);
+	while (tmp1[i] && tmp2[i] && i < n)
+	{
+		if (tmp1[i] != tmp2[i])
+			return (tmp1[i] - tmp2[i]);
+		i++;
+	}
+	if (i != n)
+		return (tmp1[i] - tmp2[i]);
+	return (tmp1[i - 1] - tmp2[i - 1]);
+}
+
+unsigned long	get_len(unsigned long n)
 {
 	int		i;
 
@@ -13,17 +55,17 @@ unsigned long	ft_ullen(unsigned long n)
 	return (i);
 }
 
-void			ft_putaddr(unsigned long n)
+void			print_addr(unsigned long n)
 {
 	int			i;
 	char		hex[13];
-	static char	tab[] = "0123456789abcdef";
+	static char	charset[] = "0123456789abcdef";
 
-	bzero(hex, 13);
-	i = ft_ullen(n);
+	ft_bzero(hex, 13);
+	i = get_len(n);
 	while (n > 0)
 	{
-		hex[i] = tab[n % 16];
+		hex[i] = charset[n % 16];
 		n /= 16;
 		i--;
 	}
@@ -31,64 +73,52 @@ void			ft_putaddr(unsigned long n)
 	ft_putstr(hex);
 }
 
-void			print_zeros(int i, unsigned long j)
+void		put_zeros(int i, unsigned long j)
 {
 	if (j > 0)
-		i -= ft_ullen(j) + 1;
+		i -= get_len(j) + 1;
 	while (--i > 0)
 		ft_putchar('0');
 }
 
-void			print_file2(t_file *file)
+void		display_help(t_macho_info *obj)
 {
-	//if (!strncmp(file->name, "radr:", 5) || file->type == 'u')
-	//	return ;
-	if (file->show_addr)
+	/* TODO split this shit */
+	if (obj->displayable)
 	{
-		if (file->arch == x86_64)
-			print_zeros(17, file->value);
-		else if (file->arch == 32)
-			print_zeros(9, file->value);
-		if (file->value > 0)
-			ft_putaddr(file->value);
+		if (obj->arch == x86_64)
+			put_zeros(17, obj->value);
+		else if (obj->arch == x86)
+			put_zeros(9, obj->value);
+		if (obj->value > 0)
+			print_addr(obj->value);
 	}
-	else if (file->arch == 32)
+	else if (obj->arch == x86)
 		ft_putstr("        ");
 	else
 		ft_putstr("                ");
 	ft_putchar(' ');
-	ft_putchar(file->type);
+	ft_putchar(obj->type);
 	ft_putchar(' ');
-	printf("%s\n", file->name);
+	printf("%s\n", obj->name);
 }
 
-void			print_file(t_macho *macho, int ar)
+void			display_nm(t_macho *macho, int ar)
 {
-	t_file	*tmp;
+	t_macho_info	*tmp;
 
-	ar == x86_64 ? (tmp =  macho->x86_64o.file) :
-					(tmp = macho->x86o.file);
-	//tmp = macho->x86_64o.file;
-	if (macho->args_num)
+	ar == x86_64 ? (tmp = macho->x86_64o.obj) :
+					(tmp = macho->x86o.obj);
+	if (macho->args_num && !macho->fat)
 		printf("\n%s\n", macho->name);
 	while (tmp)
 	{
-		print_file2(tmp);
+		if (!ft_strncmp(tmp->name, "radr:", 5) || tmp->type == 'u') {
+			tmp = tmp->next;
+			continue ;
+		}
+
+		display_help(tmp);
 		tmp = tmp->next;
 	}
-}
-
-void ft_putchar(char c)
-{
-    write(1, &c, 1);
-}
-
-void ft_putstr(const char *str)
-{
-    int i = 0;
-    while (str[i])
-    {
-        ft_putchar(str[i]);
-        str++;
-    }
 }
