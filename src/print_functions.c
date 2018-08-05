@@ -62,13 +62,15 @@ void			print_file2(t_file *file)
 	printf("%s\n", file->name);
 }
 
-void			print_file(t_obj *obj)
+void			print_file(t_macho *macho, int ar)
 {
 	t_file	*tmp;
 
-	tmp = obj->x86_64o.file;
-	if (obj->args_num)
-		printf("\n%s\n", obj->name);
+	ar == x86_64 ? (tmp =  macho->x86_64o.file) :
+					(tmp = macho->x86o.file);
+	//tmp = macho->x86_64o.file;
+	if (macho->args_num)
+		printf("\n%s\n", macho->name);
 	while (tmp)
 	{
 		print_file2(tmp);

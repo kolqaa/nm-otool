@@ -13,7 +13,7 @@ uint32_t	endianness(uint32_t value)
 	return (result);
 }
 
-void		handle_fat(void *ptr, t_obj *obj)
+void		handle_fat(void *ptr, t_macho *macho)
 {
 	struct fat_header	*fat;
 	struct fat_arch		*arch;
@@ -22,7 +22,7 @@ void		handle_fat(void *ptr, t_obj *obj)
 	uint32_t			offset;
 
 	i = 0;
-	fat = (struct fat_header *)obj->obj_ptr;
+	fat = (struct fat_header *)macho->obj_ptr;
 	arch = (void *)fat + sizeof(fat);
 	narch = endianness(fat->nfat_arch);
 	while (i < narch)
@@ -33,5 +33,5 @@ void		handle_fat(void *ptr, t_obj *obj)
 		i++;
 	}
 	printf("Here\n");
-	obj->handle_arch[set_arch(ptr + offset)](ptr + offset, obj);
+	macho->handle_arch[set_arch(ptr + offset)](ptr + offset, macho);
 }

@@ -5,25 +5,25 @@
 #include <ctype.h>
 
 
-int get_file(char *file, t_obj *obj)
+int get_file(char *file, t_macho *macho)
 {
-	obj->name = file;
+	macho->name = file;
 
-	if ((obj->fd = open(file, O_RDONLY)) < 0)
-		return (nm_error(obj->name, EINVAL_OPEN));
+	if ((macho->fd = open(file, O_RDONLY)) < 0)
+		return (nm_error(macho->name, EINVAL_OPEN));
 
-	if (fstat(obj->fd, &(obj->buf)) < 0)
-		return (nm_error(obj->name, EINVAL_FSTAT));
+	if (fstat(macho->fd, &(macho->buf)) < 0)
+		return (nm_error(macho->name, EINVAL_FSTAT));
 
-	if (obj->buf.st_size <= 0)
-		return (nm_error(obj->name, EISEMPTY));
+	if (macho->buf.st_size <= 0)
+		return (nm_error(macho->name, EISEMPTY));
 	else
-		obj->ptr_size = obj->buf.st_size;
+		macho->ptr_size = macho->buf.st_size;
 
-	if (S_ISREG(obj->buf.st_mode))
+	if (S_ISREG(macho->buf.st_mode))
 		return (EXIT_SUCCESS);
 	else
-		return (nm_error(obj->name, EISDIR));
+		return (nm_error(macho->name, EISDIR));
 }
 
 int set_arch(void *ptr)
@@ -49,27 +49,29 @@ int set_arch(void *ptr)
 
 
 
-int mmap_obj(t_obj *obj)
+int mmap_obj(t_macho *macho)
 {
 	void *ptr;
 
-	if ((ptr = mmap(0, obj->buf.st_size, PROT_READ, MAP_PRIVATE, obj->fd, 0))
+	if ((ptr = mmap(0, macho->buf.st_size, PROT_READ, MAP_PRIVATE, macho->fd, 0))
 		== MAP_FAILED)
-		return (nm_error(obj->name, ENOMEM));
+		return (nm_error(macho->name, ENOMEM));
 
-	obj->obj_ptr = ptr;
-	obj->handle_arch[set_arch(ptr)](ptr, obj);
+	macho->obj_ptr = ptr;
+	macho->handle_arch[set_arch(ptr)](ptr, macho);
 
 	return 0;
 }
 
-void init(t_obj *obj)
+void init(t_macho *obj)
 {
 	obj->handle_arch[x86] = handle_x86_arch;
 	obj->handle_arch[x86_64] = handle_x86_64_arch;
 	obj->handle_arch[FAT] = handle_fat;
-	//obj->handle_arch[UNKNOWN] = arch_miss;
+	//macho->handle_arch[UNKNOWN] = arch_miss;
 	obj->x86_64o.list = NULL;
+	obj->x86_64o.file = NULL;
+	obj->x86o.list = NULL;
 	obj->x86_64o.file = NULL;
 	obj->args_num = 0;
 }
@@ -94,56 +96,63 @@ void	free_sect(t_sect *sect)
 	}
 }
 
-void reinit_obj(t_obj *obj)
+void reinit_obj(t_macho *macho)
 {
-	close(obj->fd);
-	munmap(obj->obj_ptr, obj->ptr_size);
-	if(obj->x86_64o.list)
-		free_sect(obj->x86_64o.list);
-	if (obj->x86_64o.file)
-		free_file(obj->x86_64o.file);
+	close(macho->fd);
+	munmap(macho->obj_ptr, macho->ptr_size);
+	if(macho->x86_64o.list)
+		free_sect(macho->x86_64o.list);
+	if (macho->x86_64o.file)
+		free_file(macho->x86_64o.file);
 
-	obj->x86_64o.list = NULL;
-	obj->x86_64o.file = NULL;
+	if (macho->x86o.list)
+		free_sect(macho->x86o.list);
+	if (macho->x86o.file)
+		free_file(macho->x86o.file);
+
+	macho->x86_64o.list = NULL;
+	macho->x86_64o.file = NULL;
+	macho->x86o.file = NULL;
+	macho->x86o.list = NULL;
 }
 
-int with_args(int argc, char **argv, t_obj *obj)
+int with_args(int argc, char **argv, t_macho *macho)
 {
 	int iter = 0;
 	int ret;
 
 	ret = 0;
 	if (argc > 2)
-		obj->args_num = 1;
+		macho->args_num = 1;
 	while (++iter < argc)
 	{
-		if (get_file(argv[iter], obj) < 0)
+		if (get_file(argv[iter], macho) < 0)
 		{
 			ret = -1;
 			continue;
 		}
 
-		if (mmap_obj(obj) < 0)
+		if (mmap_obj(macho) < 0)
 		{
 			ret = -1;
 			continue;
 		}
 
-		reinit_obj(obj);
+		reinit_obj(macho);
 	}
 
 	return (ret < 0 ? -1 : 1);
 }
 
-int no_args(t_obj *obj)
+int no_args(t_macho *macho)
 {
-	if (get_file("a.out", obj) < 0)
+	if (get_file("a.out", macho) < 0)
 		return -1;
 
-	if (mmap_obj(obj) < 0)
+	if (mmap_obj(macho) < 0)
 		return -1;
 
-	reinit_obj(obj);
+	reinit_obj(macho);
 
 	return 0;
 }
@@ -153,13 +162,13 @@ int main(int argc, char **argv)
 	int ret;
 
 	ret = 0;
-	t_obj obj;
+	t_macho macho;
 
-	init(&obj);
+	init(&macho);
 	if (argc == 1)
-		ret = no_args(&obj);
+		ret = no_args(&macho);
 	else
-		ret = with_args(argc, argv, &obj);
+		ret = with_args(argc, argv, &macho);
 
 	/* TODO */
 	/* munmap ptr after usage free mem */
