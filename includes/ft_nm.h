@@ -128,7 +128,7 @@ void			put_zeros(int i, unsigned long j);
 void			display_help(t_macho_info *file);
 void			display_nm(t_macho *macho, int ar);
 int				ft_strncmp(const char *s1, const char *s2, size_t n);
-int		ft_strcmp(const char *s1, const char *s2);
+int				ft_strcmp(const char *s1, const char *s2);
 
 
 /* read and mmap file function */
@@ -138,8 +138,7 @@ int				get_file(char *file, t_macho *macho);
 
 /* sorting function */
 
-void			sort_list(t_macho_info **file, t_macho_info *tmp);
-void			sort_ascii(t_macho_info **obj, t_macho_info *tmp);
+void			make_order_align(t_macho_info **file, t_macho_info *tmp);
 
 /* simple linked list function */
 

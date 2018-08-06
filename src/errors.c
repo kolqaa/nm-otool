@@ -2,12 +2,14 @@
 #include "../includes/ft_nm.h"
 
 struct NM_ERR nm_err_info[] = {
-    { .code = EISDIR, .err_msg = IS_DIR_ERR },
-    { .code = ENOEXEC, .err_msg = OBJ_ERR },
+    { .code = EISDIR,       .err_msg = IS_DIR_ERR },
+    { .code = ENOEXEC,      .err_msg = OBJ_ERR },
     { .code = EINVAL_FSTAT, .err_msg = FSTAT_ERR },
-    { .code = EINVAL_OPEN, .err_msg = OPEN_ERR },
-    { .code = EISEMPTY, .err_msg = EMPTY_ERR },
-    { .code = ENOMEM, .err_msg = MMAP_ERR }
+    { .code = EINVAL_OPEN,  .err_msg = OPEN_ERR },
+    { .code = EISEMPTY,     .err_msg = EMPTY_ERR },
+    { .code = ENOMEM,       .err_msg = MMAP_ERR },
+    { .code = EINVAL_SYM,   .err_msg = SYMTAB_ERR },
+    { .code = EINVAL_SEG,   .err_msg = SEGMENT_ERR}
 };
 
 void print_error(const char *err_msg, char *file_name)

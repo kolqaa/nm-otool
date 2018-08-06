@@ -110,7 +110,7 @@ void			display_nm(t_macho *macho, int ar)
 	ar == x86_64 ? (tmp = macho->x86_64o.obj) :
 					(tmp = macho->x86o.obj);
 	if (macho->args_num && !macho->fat)
-		printf("\n%s\n", macho->name);
+		printf("\n%s:\n", macho->name);
 	while (tmp)
 	{
 		if (!ft_strncmp(tmp->name, "radr:", 5) || tmp->type == 'u') {

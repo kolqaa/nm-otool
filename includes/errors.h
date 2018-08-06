@@ -8,15 +8,19 @@
 #define	OPEN_ERR	"Can't open file.\n"
 #define	EMPTY_ERR	"File is empty.\n"
 #define MMAP_ERR	"Failed to allocate memory\n"
+#define SYMTAB_ERR	"Fails during parsing LC_SYMTAB section\n"
+#define SEGMENT_ERR	"Fails during parsing LC_SEGMENT section\n"
 
 enum NM_ERROR_CODES
 {
-    EISDIR =		-101,
-    ENOEXEC =		-102,
-    EINVAL_FSTAT =	-103,
-    EINVAL_OPEN =	-104,
-    EISEMPTY =		-105,
-    ENOMEM =		-106
+    EISDIR			=	-101,
+    ENOEXEC			=	-102,
+    EINVAL_FSTAT	=	-103,
+    EINVAL_OPEN		=	-104,
+    EISEMPTY 		=	-105,
+    ENOMEM 			=	-106,
+	EINVAL_SYM		=	-107,
+	EINVAL_SEG		=	-108
 };
 
 struct NM_ERR

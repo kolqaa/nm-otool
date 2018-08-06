@@ -34,41 +34,36 @@ void reinit_obj(t_macho *macho)
 	if (macho->x86o.obj)
 		free_file(macho->x86o.obj);
 
+	macho->fat = 0;
 	macho->x86_64o.seg_info = NULL;
 	macho->x86_64o.obj = NULL;
 	macho->x86o.obj = NULL;
 	macho->x86o.seg_info = NULL;
 }
 
-
-void	sort_ascii(t_macho_info **obj, t_macho_info *tmp)
+void	make_order_align(t_macho_info **macho, t_macho_info *tmp)
 {
 	t_macho_info	*tmp2;
 
-	tmp2 = *obj;
-	if (strcmp(tmp->name, tmp2->name) < 0)
+	if (*macho)
 	{
-		tmp->next = tmp2;
-		*obj = tmp;
-		return ;
-	}
-	while (tmp2->next)
-	{
-		if (strcmp(tmp->name, tmp2->next->name) < 0)
+		tmp2 = *macho;
+		if (ft_strcmp(tmp->name, tmp2->name) < 0)
 		{
-			tmp->next = tmp2->next;
-			tmp2->next = tmp;
+			tmp->next = tmp2;
+			*macho = tmp;
 			return ;
 		}
-		tmp2 = tmp2->next;
-	}
-	tmp2->next = tmp;
-}
-
-void	sort_list(t_macho_info **file, t_macho_info *tmp)
-{
-	if (*file)
-	{
-		sort_ascii(file, tmp);
+		while (tmp2->next)
+		{
+			if (ft_strcmp(tmp->name, tmp2->next->name) < 0)
+			{
+				tmp->next = tmp2->next;
+				tmp2->next = tmp;
+				return ;
+			}
+			tmp2 = tmp2->next;
+		}
+		tmp2->next = tmp;
 	}
 }
