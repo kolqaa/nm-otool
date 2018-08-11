@@ -9,7 +9,8 @@ struct NM_ERR nm_err_info[] = {
     { .code = EISEMPTY,     .err_msg = EMPTY_ERR },
     { .code = ENOMEM,       .err_msg = MMAP_ERR },
     { .code = EINVAL_SYM,   .err_msg = SYMTAB_ERR },
-    { .code = EINVAL_SEG,   .err_msg = SEGMENT_ERR}
+    { .code = EINVAL_SEG,   .err_msg = SEGMENT_ERR},
+    { .code = EINVAL_DUMP,  .err_msg = OBJ_ERR}
 };
 
 void print_error(const char *err_msg, char *file_name)

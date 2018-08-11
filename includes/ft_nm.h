@@ -20,13 +20,13 @@
 #define FIND_SEGMENT(seg) ({ while(seg->next) seg = seg->next;})
 #define SYM_DISPLAYABLE(el) ((el.n_type & N_TYPE) != N_UNDF)
 
-enum PORGRAM
+typedef enum 		t_prog
 {
 	NM,
 	OTOOL
-};
+}					t_e_prog;
 
-enum FILE_ARCH
+typedef enum 		t_file_arch
 {
 	x86,
 	x86_64,
@@ -34,9 +34,9 @@ enum FILE_ARCH
 	x86_OTOOL,
 	x86_64_OTOOL,
 	UNKNOWN
-};
+}					t_e_file_arch;
 
-enum types
+typedef enum 		t_types
 {
 	ABS,
 	S_BSS,
@@ -46,7 +46,14 @@ enum types
 	U_TYPE,
 	S_TYPE,
 	UNKNOWN_T
-};
+}					t_e_types;
+
+typedef enum 		t_print_info
+{
+	HEX_BASE = 16,
+	x86_BASE_ZERO = 9,
+	x86_64_BASE_ZERO = 17
+}					t_e_print_info;
 
 typedef	struct		s_segment_info
 {

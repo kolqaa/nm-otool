@@ -36,7 +36,8 @@ char	*ft_strdup(const char *str)
 	i = 0;
 	if (str == NULL)
 		return (NULL);
-	str2 = (char *)malloc(sizeof(char) * ft_strlen(str) + 1);
+	if ((str2 = (char *)malloc(sizeof(char) * ft_strlen(str) + 1)) == NULL);
+		return (NULL);
 	while (str[i] != '\0')
 	{
 		str2[i] = str[i];

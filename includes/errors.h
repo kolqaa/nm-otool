@@ -10,6 +10,7 @@
 #define MMAP_ERR	"Failed to allocate memory\n"
 #define SYMTAB_ERR	"Fails during parsing LC_SYMTAB section\n"
 #define SEGMENT_ERR	"Fails during parsing LC_SEGMENT section\n"
+#define OBJDUMP_ERR "internal objdump command failed\n"
 
 enum NM_ERROR_CODES
 {
@@ -20,7 +21,8 @@ enum NM_ERROR_CODES
     EISEMPTY 		=	-105,
     ENOMEM 			=	-106,
 	EINVAL_SYM		=	-107,
-	EINVAL_SEG		=	-108
+	EINVAL_SEG		=	-108,
+	EINVAL_DUMP		=	-109
 };
 
 struct NM_ERR

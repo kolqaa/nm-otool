@@ -39,39 +39,40 @@ char	*ft_itoa_base(int val, int base, int output_size)
 
 static int		display_otool64(struct section_64 *sec, char *ptr, char *str)
 {
-	int		i;
+	uint64_t		i;
 	long unsigned int	addr;
 
-	i = -1;
+	i = 0;
 	addr = (long unsigned int)sec->addr;
-	while (++i < sec->size)
+	while (i < sec->size)
 	{
-		if (i == 0 || i % 16 == 0)
+		if (i == 0 || i % HEX_BASE == 0)
 		{
 			if (i != 0)
-				addr += 16;
-			put_zeros(17, addr);
+				addr += HEX_BASE;
+			put_zeros(x86_64_BASE_ZERO, addr);
 			print_addr(addr);
 			ft_putstr("        ");
 		}
-		if ((str = ft_itoa_base(ptr[i], 16, 2)) == NULL)
+		if ((str = ft_itoa_base(ptr[i], HEX_BASE, 2)) == NULL)
 			return -1;
 		ft_putstr(str);
 		ft_putchar(' ');
 		free(str);
-		if ((i + 1) % 16 == 0 && (i + 1) < sec->size)
+		if ((i + 1) % HEX_BASE == 0 && (i + 1) < sec->size)
 			ft_putchar('\n');
+		i++;
 	}
-	ft_putchar('\n');
-	return (0);
+	return ((ft_putchar('\n'), 0));
 }
 
-int		get_text_section(void *ptr, t_macho *macho)
+static int		get_text_section64(void *ptr, t_macho *macho)
 {
 	int							i;
 	char						*str;
 
 	i = -1;
+	str = NULL;
 	macho->x86_64o.seg = (struct segment_command_64 *)macho->x86_64o.lc;
 	macho->x86_64o.nsects = macho->x86_64o.seg->nsects;
 	macho->x86_64o.sect = (void *)macho->x86_64o.seg +
@@ -81,10 +82,12 @@ int		get_text_section(void *ptr, t_macho *macho)
 		if (!ft_strcmp(macho->x86_64o.sect->segname, "__TEXT")
 			&& !ft_strcmp(macho->x86_64o.sect->sectname, "__text"))
 		{
+			ft_putstr(macho->name);
+			ft_putstr(":\n");
 			ft_putstr("Contents of (__TEXT,__text) section\n");
 			if (display_otool64(macho->x86_64o.sect, ptr +
 					macho->x86_64o.sect->offset, str) == -1)
-				return (-1);
+				return (nm_error(macho->name, EINVAL_DUMP));;
 		}
 		macho->x86_64o.sect = (void *)macho->x86_64o.sect +
 				sizeof(*(macho->x86_64o.sect));
@@ -103,7 +106,7 @@ void ot_x86_64_handle(void *ptr, struct s_macho *macho)
 	while (++i < macho->x86_64o.ncmds)
 	{
 		if (macho->x86_64o.lc->cmd == LC_SEGMENT_64)
-			if (get_text_section(ptr, macho) < 0)
+			if (get_text_section64(ptr, macho) < 0)
 				return ;
 		macho->x86_64o.lc = (void *)macho->x86_64o.lc +
 				macho->x86_64o.lc->cmdsize;
