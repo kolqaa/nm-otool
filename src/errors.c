@@ -13,7 +13,7 @@
 #include "../includes/errors.h"
 #include "../includes/ft_nm.h"
 
-struct nm_er	nm_err_info[] = {
+struct s_nm_err		nm_err_info[] = {
 	{.code = EISDIR, .err_msg = IS_DIR_ERR},
 	{.code = ENOEXEC, .err_msg = OBJ_ERR},
 	{.code = EINVAL_FSTAT, .err_msg = FSTAT_ERR},

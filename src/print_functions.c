@@ -69,7 +69,8 @@ void			display_help(t_macho_info *obj)
 	ft_putchar(' ');
 	ft_putchar(obj->type);
 	ft_putchar(' ');
-	printf("%s\n", obj->name);
+	ft_putstr(obj->name);
+	ft_putchar('\n');
 }
 
 void			display_nm(t_macho *macho, int ar)
@@ -79,7 +80,11 @@ void			display_nm(t_macho *macho, int ar)
 	ar == x86_64 ? (tmp = macho->x86_64o.obj) :
 					(tmp = macho->x86o.obj);
 	if (macho->args_num && !macho->fat)
-		printf("\n%s:\n", macho->name);
+	{
+		ft_putchar('\n');
+		ft_putstr(macho->name);
+		ft_putchar('\n');
+	}
 	while (tmp)
 	{
 		if (!ft_strncmp(tmp->name, "radr:", 5) || tmp->type == 'u')

@@ -9,10 +9,11 @@
 /*   Updated: 2018/08/11 19:07:10 by nsimonov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+#include "../includes/ft_nm.h"
 
 int		ft_strncmp(const char *s1, const char *s2, size_t n)
 {
-	size_t			i;
+	size_t		i;
 	unsigned char	*tmp1;
 	unsigned char	*tmp2;
 

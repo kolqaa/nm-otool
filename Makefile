@@ -18,6 +18,7 @@ SRC_NM =	$(SRC)ft_nm.c \
 		$(SRC)handle_fat.c \
 		$(SRC)handle_x86.c \
 		$(SRC)common.c \
+		$(SRC)common2.c \
 		$(SRC)process_file.c \
 		$(SRC)ot_x86_handle.c \
 		$(SRC)ot_x86_64_handle.c \
@@ -31,6 +32,7 @@ SRC_OTOOL =	$(SRC)ft_otool.c \
 		$(SRC)handle_fat.c \
 		$(SRC)handle_x86.c \
 		$(SRC)common.c \
+		$(SRC)common2.c \
 		$(SRC)process_file.c \
 		$(SRC)ot_x86_handle.c \
 		$(SRC)ot_x86_64_handle.c \

@@ -196,4 +196,4 @@ char				read_tab(int i);
 void				unknown_nm(void *ptr, t_macho *macho);
 void				unknown_otool(void *ptr, t_macho *macho);
 
-#endif FT_NM_H
+#endif
