@@ -22,8 +22,6 @@ static void	free_sect(t_segment_info *obj_seg)
 
 void reinit_obj(t_macho *macho)
 {
-	close(macho->fd);
-	munmap(macho->obj_ptr, macho->ptr_size);
 	if(macho->x86_64o.seg_info)
 		free_sect(macho->x86_64o.seg_info);
 	if (macho->x86_64o.obj)
@@ -33,6 +31,9 @@ void reinit_obj(t_macho *macho)
 		free_sect(macho->x86o.seg_info);
 	if (macho->x86o.obj)
 		free_file(macho->x86o.obj);
+
+	close(macho->fd);
+	munmap(macho->obj_ptr, macho->ptr_size);
 
 	macho->fat = 0;
 	macho->x86_64o.seg_info = NULL;

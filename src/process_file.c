@@ -102,7 +102,7 @@ int with_args(int argc, char **argv, t_macho *macho, int prog)
 		reinit_obj(macho);
 	}
 
-	return (ret < 0 ? -1 : 1);
+	return (ret);
 }
 
 int no_args(t_macho *macho, int prog)
@@ -114,6 +114,5 @@ int no_args(t_macho *macho, int prog)
 		return -1;
 
 	reinit_obj(macho);
-
 	return 0;
 }
