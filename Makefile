@@ -50,8 +50,10 @@ $(NAME_OTOOL):	$(OBJ_OTOOL)
 	$(CC) $(CFLAGS) -o $@ -c $<
 
 clean:
-	rm -f $(NAME_NM)
-	rm -f $(NAME_OTOOL)
+	rm -rf $(OBJ_NM)
+	rm -rf $(OBJ_OTOOL)
+#	rm -f $(NAME_NM)
+#	rm -f $(NAME_OTOOL)
 
 fclean: clean
 	rm -f $(NAME_NM)
