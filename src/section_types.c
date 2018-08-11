@@ -46,9 +46,9 @@ char	get_type(unsigned char c, unsigned char s, t_macho *obj)
 	else
 		a = obj->type_charests[UNKNOWN_T];
 		//'?';
-
+//gha
 	if (NOT_EXTERNAL_SYM(c,a))
-		c = toupper(a);
+		c = ft_toupper(a);
 	else
 		return (a);
 

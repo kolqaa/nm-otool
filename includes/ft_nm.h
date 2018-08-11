@@ -11,8 +11,6 @@
 #include <sys/stat.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <string.h>
-#include <ctype.h>
 
 #define ARRAY_SIZE(array) (int)(sizeof((array))/sizeof((array)[0]))
 #define APPLAY_MASK(x) (x & N_TYPE)
@@ -144,6 +142,7 @@ void			display_help(t_macho_info *file);
 void			display_nm(t_macho *macho, int ar);
 int				ft_strncmp(const char *s1, const char *s2, size_t n);
 int				ft_strcmp(const char *s1, const char *s2);
+int 			ft_toupper(int c);
 
 
 /* read and mmap file function */

@@ -1,5 +1,12 @@
 #include "../includes/ft_nm.h"
 
+int		ft_toupper(int c)
+{
+	if (c >= 'a' && c <= 'z')
+		c -= 32;
+	return (c);
+}
+
 void	ft_bzero(void *str, size_t n)
 {
 	size_t			i;
@@ -36,7 +43,7 @@ char	*ft_strdup(const char *str)
 	i = 0;
 	if (str == NULL)
 		return (NULL);
-	if ((str2 = (char *)malloc(sizeof(char) * ft_strlen(str) + 1)) == NULL);
+	if ((str2 = (char *)malloc(sizeof(char) * ft_strlen(str) + 1)) == NULL)
 		return (NULL);
 	while (str[i] != '\0')
 	{
@@ -44,8 +51,6 @@ char	*ft_strdup(const char *str)
 		i++;
 	}
 	str2[i] = '\0';
-	if (str2 == NULL)
-		return (NULL);
 	return (str2);
 }
 
