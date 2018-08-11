@@ -18,6 +18,14 @@
 #define FIND_SEGMENT(seg) ({ while(seg->next) seg = seg->next;})
 #define SYM_DISPLAYABLE(el) ((el.n_type & N_TYPE) != N_UNDF)
 
+/* from host endianness to the endianness specified */
+
+#define S24(val) ((val & 0xFF000000) >> 24)
+#define S8(val) ((val & 0x00FF0000) >> 8)
+#define S8_H(val) ((val & 0x0000FF00) << 8)
+#define S24_H(val) ((val & 0x000000FF) << 24)
+#define BIG_LITTLE(r, v) (r |= (S24_H(v)) | (S8_H(v)) | (S8(v) | S24(v)))
+
 typedef enum 		t_prog
 {
 	NM,
@@ -31,7 +39,8 @@ typedef enum 		t_file_arch
 	FAT,
 	x86_OTOOL,
 	x86_64_OTOOL,
-	UNKNOWN
+	UNKNOWN,
+	UNKNOWN_OTOOL
 }					t_e_file_arch;
 
 typedef enum 		t_types
@@ -114,7 +123,6 @@ typedef struct		s_macho
 	int				fat;
 	int 			arch;
 
-
 	t_x86			x86o;
 	t_x86_64		x86_64o;
 
@@ -124,7 +132,7 @@ typedef struct		s_macho
 	const unsigned char	*type_charests;
 
 	uint32_t		program;
-	void (*handle_arch[6])(void *ptr,
+	void (*handle_arch[7])(void *ptr,
 						   struct s_macho *macho);
 
 }					t_macho;
@@ -147,12 +155,12 @@ int 			ft_toupper(int c);
 
 /* read and mmap file function */
 
-int				mmap_obj(t_macho *macho);
-int				get_file(char *file, t_macho *macho);
+int				mmap_obj(t_macho *macho, int prog);
+int				get_file(char *file, t_macho *macho, int prog);
 void			reinit_obj(t_macho *macho);
 void			init(t_macho *obj, uint32_t prog);
-int 			with_args(int argc, char **argv, t_macho *macho);
-int				no_args(t_macho *macho);
+int 			with_args(int argc, char **argv, t_macho *macho, int prog);
+int				no_args(t_macho *macho, int prog);
 
 
 /* sorting function */
@@ -164,7 +172,7 @@ void			make_order_align(t_macho_info **file, t_macho_info *tmp);
 void			handle_x86_64_arch(void *ptr, t_macho *macho);
 char			get_type_by_sect(unsigned char s, t_macho *macho);
 char			get_type(unsigned char c, unsigned char s, t_macho *macho);
-int				set_arch(void *ptr, char *name, t_macho *macho);
+int				set_arch(void *ptr, t_macho *macho);
 
 /* FAT arch */
 
@@ -180,5 +188,8 @@ void ot_x86_handle(void *ptr, struct s_macho *macho);
 char	*ft_itoa_base(int val, int base, int output_size);
 char	read_tab(int i);
 
+/* error func */
+void unknown_nm(void *ptr, t_macho *macho);
+void unknown_otool(void *ptr, t_macho *macho);
 
 #endif

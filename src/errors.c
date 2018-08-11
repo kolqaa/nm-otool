@@ -13,15 +13,15 @@ struct NM_ERR nm_err_info[] = {
     { .code = EINVAL_DUMP,  .err_msg = OBJ_ERR}
 };
 
-void print_error(const char *err_msg, char *file_name)
+static void print_error(const char *err_msg, char *file_name, int prog)
 {
-    ft_putstr("nm: ");
+    prog == NM ? (ft_putstr("ft_nm: ")) :(ft_putstr("ft_otool: "));
     ft_putstr(file_name);
     ft_putstr(": ");
     ft_putstr(err_msg);
 }
 
-int nm_error(char *file, int nm_err_code)
+int nm_error(char *file, int nm_err_code, int prog)
 {
     int i = 0;
     int ret = 0;
@@ -30,7 +30,7 @@ int nm_error(char *file, int nm_err_code)
     {
         if (nm_err_info[i].code == nm_err_code)
         {
-            print_error(nm_err_info[i].err_msg, file);
+            print_error(nm_err_info[i].err_msg, file, prog);
             return nm_err_info[i].code;
         }
         i++;

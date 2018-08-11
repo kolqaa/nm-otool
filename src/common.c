@@ -1,4 +1,21 @@
 #include "../includes/ft_nm.h"
+#include "../includes/errors.h"
+
+void unknown_nm(void *ptr, t_macho *macho)
+{
+	nm_error(macho->name, ENOEXEC, NM);
+	ptr = NULL;
+	macho = NULL;
+}
+
+void unknown_otool(void *ptr, t_macho *macho)
+{
+	nm_error(macho->name, ENOEXEC, OTOOL);
+	ptr = NULL;
+	macho = NULL;
+}
+
+
 
 int		ft_toupper(int c)
 {

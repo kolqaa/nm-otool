@@ -87,7 +87,7 @@ static int		get_text_section64(void *ptr, t_macho *macho)
 			ft_putstr("Contents of (__TEXT,__text) section\n");
 			if (display_otool64(macho->x86_64o.sect, ptr +
 					macho->x86_64o.sect->offset, str) == -1)
-				return (nm_error(macho->name, EINVAL_DUMP));;
+				return (nm_error(macho->name, EINVAL_DUMP, OTOOL));
 		}
 		macho->x86_64o.sect = (void *)macho->x86_64o.sect +
 				sizeof(*(macho->x86_64o.sect));

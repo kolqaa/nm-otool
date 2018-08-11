@@ -11,7 +11,7 @@ int		add_segment32_help(t_macho *macho)
 	tmp_seg = macho->x86o.seg_info;
 	section = macho->x86o.sect;
 	if ((seg = (t_segment_info *)malloc(sizeof(t_segment_info))) == NULL)
-		return (nm_error(macho->name, ENOMEM));
+		return (nm_error(macho->name, ENOMEM, NM));
 	seg->name = ft_strdup(section->sectname);
 	seg->next = NULL;
 	if (macho->x86o.seg_info)
@@ -39,7 +39,7 @@ int		add_segment32_node(void *lc, t_macho *macho)
 	while (i < macho->x86o.nsects)
 	{
 		if (add_segment32_help(macho) < 0)
-			return (nm_error(macho->name, EINVAL_SEG));
+			return (nm_error(macho->name, EINVAL_SEG, NM));
 		macho->x86o.sect = (void *)macho->x86o.sect + sizeof(*(macho->x86o.sect));
 		i++;
 	}
@@ -55,7 +55,7 @@ int		add_symtab32_help(int i, char *str, t_macho *macho)
 			!ft_strlen(str + macho->x86o.el[i].n_un.n_strx))
 		return (0);
 	if ((tmp = (t_macho_info *)malloc(sizeof(t_macho_info))) == NULL)
-		return (nm_error(macho->name, ENOMEM));
+		return (nm_error(macho->name, ENOMEM, NM));
 	tmp->name = ft_strdup(str + macho->x86o.el[i].n_un.n_strx);
 	tmp->type = get_type(macho->x86o.el[i].n_type,
 						 macho->x86o.el[i].n_sect, macho);
@@ -85,7 +85,7 @@ int		add_symtab32_node(void *ptr, t_macho *macho)
 	while (i < (int)macho->x86o.sym->nsyms)
 	{
 		if (add_symtab32_help(i, str, macho) < 0)
-			return (nm_error(macho->name, EINVAL_SYM));
+			return (nm_error(macho->name, EINVAL_SYM, NM));
 		i++;
 	}
 	return (0);

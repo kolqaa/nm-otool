@@ -10,9 +10,9 @@ int main(int argc, char **argv)
 
 	init(&macho, NM);
 	if (argc == 1)
-		ret = no_args(&macho);
+		ret = no_args(&macho, NM);
 	else
-		ret = with_args(argc, argv, &macho);
+		ret = with_args(argc, argv, &macho, NM);
 
 	/* TODO */
 	/* munmap ptr after usage free mem */

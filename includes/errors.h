@@ -33,8 +33,6 @@ struct NM_ERR
 
 extern struct NM_ERR nm_err_info[];
 
-void print_error(const char *err_msg, char *file_name);
-int nm_error(char *file, int nm_err_code);
-void print_error(const char *err_msg, char *file_name);
+int nm_error(char *file, int nm_err_code, int prog);
 
 #endif
