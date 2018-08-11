@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   section_types.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nsimonov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/08/11 19:20:25 by nsimonov          #+#    #+#             */
+/*   Updated: 2018/08/11 19:21:15 by nsimonov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/ft_nm.h"
 
 unsigned char	get_by_section(unsigned char s, t_macho *macho)
@@ -5,7 +17,7 @@ unsigned char	get_by_section(unsigned char s, t_macho *macho)
 	t_segment_info	*seg;
 
 	(macho->arch == x86) ? (seg = macho->x86o.seg_info) :
-		  					(seg = macho->x86_64o.seg_info);
+		(seg = macho->x86_64o.seg_info);
 	while (seg)
 	{
 		if (s == seg->s_num)
@@ -24,7 +36,7 @@ unsigned char	get_by_section(unsigned char s, t_macho *macho)
 	return (macho->type_charests[S_TYPE]);
 }
 
-char	get_type(unsigned char c, unsigned char s, t_macho *obj)
+char			get_type(unsigned char c, unsigned char s, t_macho *obj)
 {
 	unsigned char	a;
 
@@ -45,12 +57,10 @@ char	get_type(unsigned char c, unsigned char s, t_macho *obj)
 		a = obj->type_charests[U_TYPE];
 	else
 		a = obj->type_charests[UNKNOWN_T];
-		//'?';
-
+	//'?';
 	if (NOT_EXTERNAL_SYM(c,a))
 		c = ft_toupper(a);
 	else
 		return (a);
-
 	return (c);
 }

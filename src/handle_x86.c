@@ -1,6 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   handle_x86.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nsimonov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/08/11 18:16:25 by nsimonov          #+#    #+#             */
+/*   Updated: 2018/08/11 18:18:38 by nsimonov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/ft_nm.h"
 #include "../includes/errors.h"
-
 
 int		add_segment32_help(t_macho *macho)
 {
@@ -40,7 +51,8 @@ int		add_segment32_node(void *lc, t_macho *macho)
 	{
 		if (add_segment32_help(macho) < 0)
 			return (nm_error(macho->name, EINVAL_SEG, NM));
-		macho->x86o.sect = (void *)macho->x86o.sect + sizeof(*(macho->x86o.sect));
+		macho->x86o.sect = (void *)macho->x86o.sect +
+				sizeof(*(macho->x86o.sect));
 		i++;
 	}
 	return (0);
@@ -51,14 +63,14 @@ int		add_symtab32_help(int i, char *str, t_macho *macho)
 	t_macho_info	*tmp;
 
 	if (get_type(macho->x86o.el[i].n_type,
-				 macho->x86o.el[i].n_sect, macho) == '?' ||
+				macho->x86o.el[i].n_sect, macho) == '?' ||
 			!ft_strlen(str + macho->x86o.el[i].n_un.n_strx))
 		return (0);
 	if ((tmp = (t_macho_info *)malloc(sizeof(t_macho_info))) == NULL)
 		return (nm_error(macho->name, ENOMEM, NM));
 	tmp->name = ft_strdup(str + macho->x86o.el[i].n_un.n_strx);
 	tmp->type = get_type(macho->x86o.el[i].n_type,
-						 macho->x86o.el[i].n_sect, macho);
+			macho->x86o.el[i].n_sect, macho);
 	tmp->value = 0;
 	tmp->arch = x86;
 	tmp->next = NULL;
@@ -91,9 +103,9 @@ int		add_symtab32_node(void *ptr, t_macho *macho)
 	return (0);
 }
 
-void handle_x86_arch(void *ptr, t_macho *macho)
+void	handle_x86_arch(void *ptr, t_macho *macho)
 {
-	int						i;
+	int	i;
 
 	i = -1;
 	macho->x86o.header = (struct mach_header *)ptr;

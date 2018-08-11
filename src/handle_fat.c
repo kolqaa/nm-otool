@@ -1,11 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   handle_fat.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nsimonov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/08/11 18:12:49 by nsimonov          #+#    #+#             */
+/*   Updated: 2018/08/11 18:16:00 by nsimonov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/ft_nm.h"
 
-void		handle_fat(void *ptr, t_macho *macho)
+void	handle_fat(void *ptr, t_macho *macho)
 {
 	int					i;
 	int					narch;
 	uint32_t			offset;
-	uint32_t			swaped;
 	struct fat_header	*fat;
 	struct fat_arch		*arch;
 
@@ -18,8 +29,8 @@ void		handle_fat(void *ptr, t_macho *macho)
 	macho->fat = 1;
 	while (i < narch)
 	{
-		swaped = 0;
-		if (BIG_LITTLE(swaped, arch->cputype) == CPU_TYPE_X86_64)
+		macho->swaped = 0;
+		if (BIG_LITTLE(macho->swaped, arch->cputype) == CPU_TYPE_X86_64)
 			BIG_LITTLE(offset, arch->offset);
 		arch = (void *)arch + sizeof(*arch);
 		i++;

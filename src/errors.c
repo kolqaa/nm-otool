@@ -1,40 +1,53 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   errors.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nsimonov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/08/11 18:00:34 by nsimonov          #+#    #+#             */
+/*   Updated: 2018/08/11 18:06:31 by nsimonov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/errors.h"
 #include "../includes/ft_nm.h"
 
-struct NM_ERR nm_err_info[] = {
-    { .code = EISDIR,       .err_msg = IS_DIR_ERR },
-    { .code = ENOEXEC,      .err_msg = OBJ_ERR },
-    { .code = EINVAL_FSTAT, .err_msg = FSTAT_ERR },
-    { .code = EINVAL_OPEN,  .err_msg = OPEN_ERR },
-    { .code = EISEMPTY,     .err_msg = EMPTY_ERR },
-    { .code = ENOMEM,       .err_msg = MMAP_ERR },
-    { .code = EINVAL_SYM,   .err_msg = SYMTAB_ERR },
-    { .code = EINVAL_SEG,   .err_msg = SEGMENT_ERR},
-    { .code = EINVAL_DUMP,  .err_msg = OBJ_ERR}
+struct nm_er	nm_err_info[] = {
+	{.code = EISDIR, .err_msg = IS_DIR_ERR},
+	{.code = ENOEXEC, .err_msg = OBJ_ERR},
+	{.code = EINVAL_FSTAT, .err_msg = FSTAT_ERR},
+	{.code = EINVAL_OPEN, .err_msg = OPEN_ERR},
+	{.code = EISEMPTY, .err_msg = EMPTY_ERR},
+	{.code = ENOMEM, .err_msg = MMAP_ERR},
+	{.code = EINVAL_SYM, .err_msg = SYMTAB_ERR},
+	{.code = EINVAL_SEG, .err_msg = SEGMENT_ERR},
+	{ .code = EINVAL_DUMP, .err_msg = OBJ_ERR}
 };
 
-static void print_error(const char *err_msg, char *file_name, int prog)
+static void		print_error(const char *err_msg, char *file_name, int prog)
 {
-    prog == NM ? (ft_putstr("ft_nm: ")) :(ft_putstr("ft_otool: "));
-    ft_putstr(file_name);
-    ft_putstr(": ");
-    ft_putstr(err_msg);
+	prog == NM ? (ft_putstr("ft_nm: ")) : (ft_putstr("ft_otool: "));
+	ft_putstr(file_name);
+	ft_putstr(": ");
+	ft_putstr(err_msg);
 }
 
-int nm_error(char *file, int nm_err_code, int prog)
+int				nm_error(char *file, int nm_err_code, int prog)
 {
-    int i = 0;
-    int ret = 0;
+	int i;
+	int ret;
 
-    while (i < ARRAY_SIZE(nm_err_info))
-    {
-        if (nm_err_info[i].code == nm_err_code)
-        {
-            print_error(nm_err_info[i].err_msg, file, prog);
-            return nm_err_info[i].code;
-        }
-        i++;
-    }
-
-    return ret;
+	i = 0;
+	ret = 0;
+	while (i < ARRAY_SIZE(nm_err_info))
+	{
+		if (nm_err_info[i].code == nm_err_code)
+		{
+			print_error(nm_err_info[i].err_msg, file, prog);
+			return (nm_err_info[i].code);
+		}
+		i++;
+	}
+	return (ret);
 }

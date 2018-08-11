@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   handle_x86_64.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nsimonov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/08/11 18:18:47 by nsimonov          #+#    #+#             */
+/*   Updated: 2018/08/11 18:21:59 by nsimonov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/ft_nm.h"
 #include "../includes/errors.h"
 
@@ -21,7 +33,7 @@ static int		add_segment64_help(t_macho *macho)
 	}
 	else
 	{
-		seg->s_num= 1;
+		seg->s_num = 1;
 		macho->x86_64o.seg_info = seg;
 	}
 	return (0);
@@ -29,37 +41,37 @@ static int		add_segment64_help(t_macho *macho)
 
 static int		add_segment64_node(void *lc, t_macho *macho)
 {
-	int							i;
+	int	i;
 
 	i = 0;
 	macho->x86_64o.seg = lc;
 	macho->x86_64o.nsects = macho->x86_64o.seg->nsects;
-	macho->x86_64o.sect = (void*)macho->x86_64o.seg + sizeof(*(macho->x86_64o.seg));
+	macho->x86_64o.sect = (void*)macho->x86_64o.seg +
+						sizeof(*(macho->x86_64o.seg));
 	while (i < macho->x86_64o.nsects)
 	{
 		if (add_segment64_help(macho) < 0)
 			return (nm_error(macho->name, EINVAL_SEG, NM));
 		macho->x86_64o.sect = (void *)macho->x86_64o.sect +
-				sizeof(*(macho->x86_64o.sect));
+			sizeof(*(macho->x86_64o.sect));
 		i++;
 	}
 	return (0);
 }
 
-
 static int		add_symtab64_help(int i, char *str, t_macho *macho)
 {
-	t_macho_info		*tmp;
+	t_macho_info	*tmp;
 
 	if (get_type(macho->x86_64o.el[i].n_type,
-				 macho->x86_64o.el[i].n_sect, macho) == '?' ||
-			!ft_strlen(str + macho->x86_64o.el[i].n_un.n_strx))
+				macho->x86_64o.el[i].n_sect, macho) == '?' ||
+				!ft_strlen(str + macho->x86_64o.el[i].n_un.n_strx))
 		return (0);
 	if ((tmp = (t_macho_info *)malloc(sizeof(t_macho_info))) == NULL)
 		return (nm_error(macho->name, ENOMEM, NM));
 	tmp->name = ft_strdup(str + macho->x86_64o.el[i].n_un.n_strx);
 	tmp->type = get_type(macho->x86_64o.el[i].n_type,
-						 macho->x86_64o.el[i].n_sect, macho);
+				macho->x86_64o.el[i].n_sect, macho);
 	tmp->value = 0;
 	tmp->arch = x86_64;
 	tmp->next = NULL;
@@ -92,9 +104,9 @@ static int		add_symtab64_node(void *ptr, t_macho *obj)
 	return (0);
 }
 
-void handle_x86_64_arch(void *ptr, t_macho *macho)
+void			handle_x86_64_arch(void *ptr, t_macho *macho)
 {
-	int							i;
+	int	i;
 
 	i = 0;
 	macho->x86_64o.header = (struct mach_header_64 *)ptr;
@@ -105,7 +117,6 @@ void handle_x86_64_arch(void *ptr, t_macho *macho)
 		if (macho->x86_64o.lc->cmd == LC_SEGMENT_64)
 			if (add_segment64_node(macho->x86_64o.lc, macho) < 0)
 				return ;
-
 		if (macho->x86_64o.lc->cmd == LC_SYMTAB)
 		{
 			macho->x86_64o.sym = (struct symtab_command *)macho->x86_64o.lc;
@@ -114,7 +125,7 @@ void handle_x86_64_arch(void *ptr, t_macho *macho)
 			break ;
 		}
 		macho->x86_64o.lc = (void *)macho->x86_64o.lc +
-				macho->x86_64o.lc->cmdsize;
+							macho->x86_64o.lc->cmdsize;
 		i++;
 	}
 	display_nm(macho, x86_64);

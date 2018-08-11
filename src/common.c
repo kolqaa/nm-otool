@@ -1,55 +1,57 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   common.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nsimonov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/08/11 18:07:01 by nsimonov          #+#    #+#             */
+/*   Updated: 2018/08/11 19:04:54 by nsimonov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/ft_nm.h"
 #include "../includes/errors.h"
 
-void unknown_nm(void *ptr, t_macho *macho)
+int		ft_strcmp(const char *s1, const char *s2)
+{
+	int				i;
+	unsigned char	*tmp1;
+	unsigned char	*tmp2;
+
+	i = 0;
+	tmp1 = (unsigned char *)s1;
+	tmp2 = (unsigned char *)s2;
+	if (tmp1 == NULL || tmp2 == NULL)
+		return (0);
+	while (tmp1[i] && tmp2[i])
+	{
+		if (tmp1[i] != tmp2[i])
+			return (tmp1[i] - tmp2[i]);
+		i++;
+	}
+	return (tmp1[i] - tmp2[i]);
+}
+
+void	unknown_nm(void *ptr, t_macho *macho)
 {
 	nm_error(macho->name, ENOEXEC, NM);
 	ptr = NULL;
 	macho = NULL;
 }
 
-void unknown_otool(void *ptr, t_macho *macho)
+void	unknown_otool(void *ptr, t_macho *macho)
 {
 	nm_error(macho->name, ENOEXEC, OTOOL);
 	ptr = NULL;
 	macho = NULL;
 }
 
-
-
 int		ft_toupper(int c)
 {
 	if (c >= 'a' && c <= 'z')
 		c -= 32;
 	return (c);
-}
-
-void	ft_bzero(void *str, size_t n)
-{
-	size_t			i;
-	unsigned char	*tmp;
-
-	i = 0;
-	if (str == NULL)
-		return ;
-	tmp = str;
-	while (i < n)
-	{
-		tmp[i] = 0;
-		i++;
-	}
-}
-
-size_t	ft_strlen(const char *str)
-{
-	int	i;
-
-	i = 0;
-	if (str == NULL)
-		return (0);
-	while (str[i])
-		i++;
-	return (i);
 }
 
 char	*ft_strdup(const char *str)
@@ -69,19 +71,4 @@ char	*ft_strdup(const char *str)
 	}
 	str2[i] = '\0';
 	return (str2);
-}
-
-void ft_putchar(char c)
-{
-	write(1, &c, 1);
-}
-
-void ft_putstr(const char *str)
-{
-	int i = 0;
-	while (str[i])
-	{
-		ft_putchar(str[i]);
-		str++;
-	}
 }

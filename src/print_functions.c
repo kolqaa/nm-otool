@@ -1,46 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   print_functions.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nsimonov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/08/11 19:00:53 by nsimonov          #+#    #+#             */
+/*   Updated: 2018/08/11 19:07:22 by nsimonov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/ft_nm.h"
-
-int		ft_strcmp(const char *s1, const char *s2)
-{
-	int					i;
-	unsigned char		*tmp1;
-	unsigned char		*tmp2;
-
-	i = 0;
-	tmp1 = (unsigned char *)s1;
-	tmp2 = (unsigned char *)s2;
-	if (tmp1 == NULL || tmp2 == NULL)
-		return (0);
-	while (tmp1[i] && tmp2[i])
-	{
-		if (tmp1[i] != tmp2[i])
-			return (tmp1[i] - tmp2[i]);
-		i++;
-	}
-	return (tmp1[i] - tmp2[i]);
-}
-
-int		ft_strncmp(const char *s1, const char *s2, size_t n)
-{
-	size_t				i;
-	unsigned char		*tmp1;
-	unsigned char		*tmp2;
-
-	i = 0;
-	tmp1 = (unsigned char *)s1;
-	tmp2 = (unsigned char *)s2;
-	if (n == 0 || tmp1 == NULL || tmp2 == NULL)
-		return (0);
-	while (tmp1[i] && tmp2[i] && i < n)
-	{
-		if (tmp1[i] != tmp2[i])
-			return (tmp1[i] - tmp2[i]);
-		i++;
-	}
-	if (i != n)
-		return (tmp1[i] - tmp2[i]);
-	return (tmp1[i - 1] - tmp2[i - 1]);
-}
 
 unsigned long	get_len(unsigned long n)
 {
@@ -73,7 +43,7 @@ void			print_addr(unsigned long n)
 	ft_putstr(hex);
 }
 
-void		put_zeros(int i, unsigned long j)
+void			put_zeros(int i, unsigned long j)
 {
 	if (j > 0)
 		i -= get_len(j) + 1;
@@ -81,9 +51,8 @@ void		put_zeros(int i, unsigned long j)
 		ft_putchar('0');
 }
 
-void		display_help(t_macho_info *obj)
+void			display_help(t_macho_info *obj)
 {
-	/* TODO split this shit */
 	if (obj->displayable)
 	{
 		if (obj->arch == x86_64)
@@ -113,11 +82,11 @@ void			display_nm(t_macho *macho, int ar)
 		printf("\n%s:\n", macho->name);
 	while (tmp)
 	{
-		if (!ft_strncmp(tmp->name, "radr:", 5) || tmp->type == 'u') {
+		if (!ft_strncmp(tmp->name, "radr:", 5) || tmp->type == 'u')
+		{
 			tmp = tmp->next;
 			continue ;
 		}
-
 		display_help(tmp);
 		tmp = tmp->next;
 	}

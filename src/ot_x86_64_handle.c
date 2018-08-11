@@ -1,7 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ot_x86_64_handle.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nsimonov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/08/11 18:25:00 by nsimonov          #+#    #+#             */
+/*   Updated: 2018/08/11 18:29:05 by nsimonov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/ft_nm.h"
 #include "../includes/errors.h"
 
-char	read_tab(int i)
+char		read_tab(int i)
 {
 	char	*tab;
 
@@ -9,7 +21,7 @@ char	read_tab(int i)
 	return (tab[i]);
 }
 
-char	*ft_itoa_base(int val, int base, int output_size)
+char		*ft_itoa_base(int val, int base, int output_size)
 {
 	char			buffer[output_size + 1];
 	char			*p;
@@ -37,9 +49,9 @@ char	*ft_itoa_base(int val, int base, int output_size)
 	return (ft_strdup(p));
 }
 
-static int		display_otool64(struct section_64 *sec, char *ptr, char *str)
+static int	display_otool64(struct section_64 *sec, char *ptr, char *str)
 {
-	uint64_t		i;
+	uint64_t			i;
 	long unsigned int	addr;
 
 	i = 0;
@@ -55,7 +67,7 @@ static int		display_otool64(struct section_64 *sec, char *ptr, char *str)
 			ft_putstr("        ");
 		}
 		if ((str = ft_itoa_base(ptr[i], HEX_BASE, 2)) == NULL)
-			return -1;
+			return (-1);
 		ft_putstr(str);
 		ft_putchar(' ');
 		free(str);
@@ -66,10 +78,10 @@ static int		display_otool64(struct section_64 *sec, char *ptr, char *str)
 	return ((ft_putchar('\n'), 0));
 }
 
-static int		get_text_section64(void *ptr, t_macho *macho)
+static int	get_text_section64(void *ptr, t_macho *macho)
 {
-	int							i;
-	char						*str;
+	int		i;
+	char	*str;
 
 	i = -1;
 	str = NULL;
@@ -95,9 +107,9 @@ static int		get_text_section64(void *ptr, t_macho *macho)
 	return (0);
 }
 
-void ot_x86_64_handle(void *ptr, struct s_macho *macho)
+void		ot_x86_64_handle(void *ptr, struct s_macho *macho)
 {
-	int							i;
+	int	i;
 
 	i = -1;
 	macho->x86_64o.header = (struct mach_header_64 *)ptr;

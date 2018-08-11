@@ -1,35 +1,40 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   process_file.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nsimonov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/08/11 19:08:00 by nsimonov          #+#    #+#             */
+/*   Updated: 2018/08/11 19:15:41 by nsimonov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../includes/ft_nm.h"
 #include "../includes/errors.h"
-#include <string.h>
-#include <ctype.h>
 
-int get_file(char *file, t_macho *macho, int prog)
+int		get_file(char *file, t_macho *macho, int prog)
 {
 	macho->name = file;
-
 	if ((macho->fd = open(file, O_RDONLY)) < 0)
 		return (nm_error(macho->name, EINVAL_OPEN, prog));
-
 	if (fstat(macho->fd, &(macho->buf)) < 0)
 		return (nm_error(macho->name, EINVAL_FSTAT, prog));
-
 	if (macho->buf.st_size <= 0)
 		return (nm_error(macho->name, EISEMPTY, prog));
 	else
 		macho->ptr_size = macho->buf.st_size;
-
 	if (S_ISREG(macho->buf.st_mode))
 		return (EXIT_SUCCESS);
 	else
 		return (nm_error(macho->name, EISDIR, prog));
 }
 
-int set_arch(void *ptr, t_macho *macho)
+int		set_arch(void *ptr, t_macho *macho)
 {
-	uint32_t  magic_number;
-	magic_number = *(uint32_t *)ptr;
+	uint32_t	magic_number;
 
+	magic_number = *(uint32_t *)ptr;
 	if (magic_number == MH_MAGIC || magic_number == MH_CIGAM)
 		return ((macho->program == NM) ? (macho->arch = x86, x86) :
 				(macho->arch = x86, x86_OTOOL));
@@ -42,23 +47,21 @@ int set_arch(void *ptr, t_macho *macho)
 		return (macho->program == NM ? (UNKNOWN) : (UNKNOWN_OTOOL));
 }
 
-int mmap_obj(t_macho *macho, int prog)
+int		mmap_obj(t_macho *macho, int prog)
 {
 	void *ptr;
 
-	if ((ptr = mmap(0, macho->buf.st_size, PROT_READ, MAP_PRIVATE, macho->fd, 0))
-		== MAP_FAILED)
+	if ((ptr = mmap(0, macho->buf.st_size, PROT_READ, MAP_PRIVATE,
+				macho->fd, 0)) == MAP_FAILED)
 		return (nm_error(macho->name, ENOMEM, prog));
-
 	macho->obj_ptr = ptr;
 	macho->handle_arch[set_arch(ptr, macho)](ptr, macho);
-
-	return 0;
+	return (0);
 }
 
-void init(t_macho *obj, uint32_t prog)
+void	init(t_macho *obj, uint32_t prog)
 {
-	const unsigned char *ch_types =  (unsigned char *)"abditus?";
+	const unsigned char	*ch_types = (unsigned char *)"abditus?";
 
 	obj->handle_arch[x86] = handle_x86_arch;
 	obj->handle_arch[x86_64] = handle_x86_64_arch;
@@ -67,7 +70,7 @@ void init(t_macho *obj, uint32_t prog)
 	obj->handle_arch[x86_64_OTOOL] = ot_x86_64_handle;
 	obj->handle_arch[UNKNOWN] = unknown_nm;
 	obj->handle_arch[UNKNOWN_OTOOL] = unknown_otool;
-
+	obj->swaped = 0;
 	obj->program = prog;
 	obj->x86_64o.seg_info = NULL;
 	obj->x86_64o.obj = NULL;
@@ -78,12 +81,13 @@ void init(t_macho *obj, uint32_t prog)
 	obj->type_charests = ch_types;
 }
 
-int with_args(int argc, char **argv, t_macho *macho, int prog)
+int		with_args(int argc, char **argv, t_macho *macho, int prog)
 {
-	int iter = 0;
+	int iter;
 	int ret;
 
 	ret = 0;
+	iter = 0;
 	if (argc > 2)
 		macho->args_num = 1;
 	while (++iter < argc)
@@ -93,7 +97,6 @@ int with_args(int argc, char **argv, t_macho *macho, int prog)
 			ret = -1;
 			continue;
 		}
-
 		if (mmap_obj(macho, prog) < 0)
 		{
 			ret = -1;
@@ -101,18 +104,15 @@ int with_args(int argc, char **argv, t_macho *macho, int prog)
 		}
 		reinit_obj(macho);
 	}
-
 	return (ret);
 }
 
-int no_args(t_macho *macho, int prog)
+int		no_args(t_macho *macho, int prog)
 {
 	if (get_file("a.out", macho, prog) < 0)
-		return -1;
-
+		return (-1);
 	if (mmap_obj(macho, prog) < 0)
-		return -1;
-
+		return (-1);
 	reinit_obj(macho);
-	return 0;
+	return (0);
 }
