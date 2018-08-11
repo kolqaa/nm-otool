@@ -171,6 +171,8 @@ void			handle_x86_arch(void *ptr, t_macho *macho);
 /* otool function */
 void ot_x86_64_handle(void *ptr, struct s_macho *macho);
 void ot_x86_handle(void *ptr, struct s_macho *macho);
+char	*ft_itoa_base(int val, int base, int output_size);
+char	read_tab(int i);
 
 
 #endif

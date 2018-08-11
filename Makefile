@@ -43,7 +43,7 @@ all: $(NAME_NM) $(NAME_OTOOL)
 $(NAME_NM):
 	$(CC) $(SRC_NM) $(CFLAGS) -o $(NAME_NM)
 
-$(NAME_OTOOL)
+$(NAME_OTOOL):
 	$(CC) $(SRC_OTOOL) $(CFLAGS) -o $(NAME_OTOOL)
 
 clean:
