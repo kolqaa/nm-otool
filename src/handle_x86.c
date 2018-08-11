@@ -95,16 +95,15 @@ void handle_x86_arch(void *ptr, t_macho *macho)
 {
 	int						i;
 
-	i = 0;
+	i = -1;
 	macho->x86o.header = (struct mach_header *)ptr;
 	macho->x86o.ncmds = macho->x86o.header->ncmds;
 	macho->x86o.lc = ptr + sizeof(*(macho->x86o.header));
-	while (i < macho->x86o.ncmds)
+	while (++i < macho->x86o.ncmds)
 	{
 		if (macho->x86o.lc->cmd == LC_SEGMENT)
 			if (add_segment32_node(macho->x86o.lc, macho) < 0)
 				return ;
-
 		if (macho->x86o.lc->cmd == LC_SYMTAB)
 		{
 			macho->x86o.sym = (struct symtab_command *)macho->x86o.lc;
@@ -112,9 +111,7 @@ void handle_x86_arch(void *ptr, t_macho *macho)
 				return ;
 			break ;
 		}
-
 		macho->x86o.lc = (void *)macho->x86o.lc + macho->x86o.lc->cmdsize;
-		i++;
 	}
 	display_nm(macho, x86);
 }

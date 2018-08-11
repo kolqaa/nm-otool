@@ -31,16 +31,16 @@ int set_arch(void *ptr, char *name, t_macho *macho)
 	magic_number = *(uint32_t *)ptr;
 
 	if (magic_number == MH_MAGIC || magic_number == MH_CIGAM)
-		return ((macho->arch = x86), x86);
+		return ((macho->program == NM) ? (macho->arch = x86, x86) :
+				(macho->arch = x86, x86_OTOOL));
 	else if (magic_number == MH_MAGIC_64 || magic_number == MH_CIGAM_64)
-		return ((macho->arch = x86_64), x86_64);
+		return ((macho->program == NM) ? (macho->arch = x86_64, x86_64) :
+				(macho->arch = x86_64, x86_64_OTOOL));
 	else if (magic_number == FAT_MAGIC || magic_number == FAT_CIGAM)
 		return (FAT);
 	else
 		exit(nm_error(name, ENOEXEC));
 }
-
-
 
 int mmap_obj(t_macho *macho)
 {
@@ -56,14 +56,17 @@ int mmap_obj(t_macho *macho)
 	return 0;
 }
 
-void init(t_macho *obj)
+void init(t_macho *obj, uint32_t prog)
 {
 	const unsigned char *ch_types =  (unsigned char *)"abditus?";
 
 	obj->handle_arch[x86] = handle_x86_arch;
 	obj->handle_arch[x86_64] = handle_x86_64_arch;
 	obj->handle_arch[FAT] = handle_fat;
+	obj->handle_arch[x86_OTOOL] = ot_x86_handle;
+	obj->handle_arch[x86_64_OTOOL] = ot_x86_64_handle;
 
+	obj->program = prog;
 	obj->x86_64o.seg_info = NULL;
 	obj->x86_64o.obj = NULL;
 	obj->x86o.seg_info = NULL;
@@ -72,7 +75,6 @@ void init(t_macho *obj)
 	obj->fat = 0;
 	obj->type_charests = ch_types;
 }
-
 
 int with_args(int argc, char **argv, t_macho *macho)
 {
@@ -95,7 +97,6 @@ int with_args(int argc, char **argv, t_macho *macho)
 			ret = -1;
 			continue;
 		}
-
 		reinit_obj(macho);
 	}
 
@@ -112,23 +113,5 @@ int no_args(t_macho *macho)
 
 	reinit_obj(macho);
 
-	return 0;
-}
-
-int main(int argc, char **argv)
-{
-	int ret;
-
-	ret = 0;
-	t_macho macho;
-
-	init(&macho);
-	if (argc == 1)
-		ret = no_args(&macho);
-	else
-		ret = with_args(argc, argv, &macho);
-
-	/* TODO */
-	/* munmap ptr after usage free mem */
 	return 0;
 }

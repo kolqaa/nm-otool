@@ -20,11 +20,19 @@
 #define FIND_SEGMENT(seg) ({ while(seg->next) seg = seg->next;})
 #define SYM_DISPLAYABLE(el) ((el.n_type & N_TYPE) != N_UNDF)
 
+enum PORGRAM
+{
+	NM,
+	OTOOL
+};
+
 enum FILE_ARCH
 {
 	x86,
 	x86_64,
 	FAT,
+	x86_OTOOL,
+	x86_64_OTOOL,
 	UNKNOWN
 };
 
@@ -110,9 +118,9 @@ typedef struct		s_macho
 	struct stat		buf;
 	const unsigned char	*type_charests;
 
-	void (*handle_arch[4])(void *ptr,
-						   struct s_macho
-						   *macho);
+	uint32_t		program;
+	void (*handle_arch[6])(void *ptr,
+						   struct s_macho *macho);
 
 }					t_macho;
 
@@ -135,30 +143,34 @@ int				ft_strcmp(const char *s1, const char *s2);
 
 int				mmap_obj(t_macho *macho);
 int				get_file(char *file, t_macho *macho);
+void			reinit_obj(t_macho *macho);
+void			init(t_macho *obj, uint32_t prog);
+int 			with_args(int argc, char **argv, t_macho *macho);
+int				no_args(t_macho *macho);
+
 
 /* sorting function */
 
 void			make_order_align(t_macho_info **file, t_macho_info *tmp);
 
-/* simple linked list function */
-
-int				add_elem2(void *ptr, char *str, t_macho *macho);
-int				add_elem(void *ptr, t_macho *macho);
-void			reinit_obj(t_macho *macho);
-
 /* process files with x86_64 arch */
+
 void			handle_x86_64_arch(void *ptr, t_macho *macho);
-int				add_section2(t_macho *macho);
-int				add_section(void *lc, t_macho *macho);
 char			get_type_by_sect(unsigned char s, t_macho *macho);
 char			get_type(unsigned char c, unsigned char s, t_macho *macho);
-
 int				set_arch(void *ptr, char *name, t_macho *macho);
 
 /* FAT arch */
+
 void			handle_fat(void *ptr, t_macho *macho);
+
+/* process files with x86 arch */
+
 void			handle_x86_arch(void *ptr, t_macho *macho);
 
+/* otool function */
+void ot_x86_64_handle(void *ptr, struct s_macho *macho);
+void ot_x86_handle(void *ptr, struct s_macho *macho);
 
 
 #endif

@@ -10,6 +10,7 @@ static uint32_t	big_little_converter(uint32_t value)
 	res |= (value & 0x0000FF00) << 8;
 	res |= (value & 0x00FF0000) >> 8;
 	res |= (value & 0xFF000000) >> 24;
+
 	return (res);
 }
 
@@ -34,7 +35,6 @@ void		handle_fat(void *ptr, t_macho *macho)
 		i++;
 	}
 
-	macho->handle_arch[set_arch(ptr +
-								offset, macho->name,macho)](ptr +
-															offset, macho);
+	macho->handle_arch[set_arch(ptr + offset, macho->name, macho)]
+			(ptr + offset, macho);
 }
