@@ -6,7 +6,7 @@
 /*   By: nsimonov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/11 18:00:34 by nsimonov          #+#    #+#             */
-/*   Updated: 2018/08/11 18:06:31 by nsimonov         ###   ########.fr       */
+/*   Updated: 2018/08/12 16:24:12 by nsimonov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,18 @@ struct s_nm_err		nm_err_info[] = {
 	{.code = ENOMEM, .err_msg = MMAP_ERR},
 	{.code = EINVAL_SYM, .err_msg = SYMTAB_ERR},
 	{.code = EINVAL_SEG, .err_msg = SEGMENT_ERR},
-	{ .code = EINVAL_DUMP, .err_msg = OBJ_ERR}
+	{.code = EINVAL_DUMP, .err_msg = OBJ_ERR},
+	{.code = EINVAL_ARGS, .err_msg = NO_ARGS}
 };
 
 static void		print_error(const char *err_msg, char *file_name, int prog)
 {
 	prog == NM ? (ft_putstr("ft_nm: ")) : (ft_putstr("ft_otool: "));
-	ft_putstr(file_name);
-	ft_putstr(": ");
+	if (file_name)
+	{
+		ft_putstr(file_name);
+		ft_putstr(": ");
+	}
 	ft_putstr(err_msg);
 }
 

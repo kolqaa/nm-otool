@@ -6,7 +6,7 @@
 /*   By: nsimonov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/11 18:01:26 by nsimonov          #+#    #+#             */
-/*   Updated: 2018/08/12 14:17:07 by nsimonov         ###   ########.fr       */
+/*   Updated: 2018/08/12 16:18:03 by nsimonov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # define SYMTAB_ERR "Fails during parsing LC_SYMTAB section\n"
 # define SEGMENT_ERR "Fails during parsing LC_SEGMENT section\n"
 # define OBJDUMP_ERR "internal objdump command failed\n"
+# define NO_ARGS "At least one file must be specified\n"
 
 enum					e_nm_err_codes
 {
@@ -33,7 +34,8 @@ enum					e_nm_err_codes
 	ENOMEM = -106,
 	EINVAL_SYM = -107,
 	EINVAL_SEG = -108,
-	EINVAL_DUMP = -109
+	EINVAL_DUMP = -109,
+	EINVAL_ARGS = -110
 }						t_e_nm_err_codes;
 
 struct					s_nm_err

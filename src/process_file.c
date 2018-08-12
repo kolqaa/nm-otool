@@ -6,7 +6,7 @@
 /*   By: nsimonov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/11 19:08:00 by nsimonov          #+#    #+#             */
-/*   Updated: 2018/08/12 15:53:39 by nsimonov         ###   ########.fr       */
+/*   Updated: 2018/08/12 16:24:46 by nsimonov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,8 @@ int		with_args(int argc, char **argv, t_macho *macho, int prog)
 
 int		no_args(t_macho *macho, int prog)
 {
+	if (prog == OTOOL)
+		return (nm_error(NULL, EINVAL_ARGS, prog));
 	if (get_file("a.out", macho, prog) < 0)
 		return (-1);
 	if (mmap_obj(macho, prog) < 0)

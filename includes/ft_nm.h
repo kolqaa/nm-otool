@@ -6,7 +6,7 @@
 /*   By: nsimonov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/11 18:30:12 by nsimonov          #+#    #+#             */
-/*   Updated: 2018/08/12 14:48:36 by nsimonov         ###   ########.fr       */
+/*   Updated: 2018/08/12 16:24:39 by nsimonov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,7 +172,8 @@ void				make_order_align(t_macho_info **file, t_macho_info *tmp);
 
 void				handle_x86_64_arch(void *ptr, t_macho *macho);
 char				get_type_by_sect(unsigned char s, t_macho *macho);
-char				get_type(unsigned char c, unsigned char s, t_macho *macho, unsigned long n_value);
+char				get_type(unsigned char c, unsigned char s, t_macho *macho,
+							unsigned long n_value);
 int					set_arch(void *ptr, t_macho *macho);
 void				handle_fat(void *ptr, t_macho *macho);
 void				handle_x86_arch(void *ptr, t_macho *macho);
