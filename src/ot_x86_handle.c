@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ot_x86_handle.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nsimonov <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/08/12 13:16:53 by nsimonov          #+#    #+#             */
+/*   Updated: 2018/08/12 13:22:35 by nsimonov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/ft_nm.h"
 #include "../includes/errors.h"
 
 static int		display_otool32(struct section *sec, char *ptr, char *str)
 {
-	uint64_t 		i;
+	uint64_t			i;
 	long unsigned int	addr;
 
 	i = 0;
@@ -27,20 +39,19 @@ static int		display_otool32(struct section *sec, char *ptr, char *str)
 			ft_putchar('\n');
 		i++;
 	}
-	return((ft_putchar('\n'), 0));
+	return (0);
 }
 
 static int		get_text_section32(void *ptr, t_macho *macho)
 {
-	int							i;
-	char						*str;
+	int		i;
+	char	*str;
 
 	i = -1;
-	str = NULL;
 	macho->x86o.seg = (struct segment_command *)macho->x86o.lc;
 	macho->x86o.nsects = macho->x86o.seg->nsects;
 	macho->x86o.sect = (void *)macho->x86o.seg +
-						  sizeof(*(macho->x86o.seg));
+						sizeof(*(macho->x86o.seg));
 	while (++i < macho->x86o.nsects)
 	{
 		if (!ft_strcmp(macho->x86o.sect->segname, "__TEXT")
@@ -50,18 +61,19 @@ static int		get_text_section32(void *ptr, t_macho *macho)
 			ft_putstr(":\n");
 			ft_putstr("Contents of (__TEXT,__text) section\n");
 			if (display_otool32(macho->x86o.sect, ptr +
-					macho->x86o.sect->offset, str) == -1)
+								macho->x86o.sect->offset, str) == -1)
 				return (nm_error(macho->name, EINVAL_DUMP, OTOOL));
+			ft_putchar('\n');
 		}
 		macho->x86o.sect = (void *)macho->x86o.sect +
-							  sizeof(*(macho->x86o.sect));
+							sizeof(*(macho->x86o.sect));
 	}
 	return (0);
 }
 
-void ot_x86_handle(void *ptr, struct s_macho *macho)
+void			ot_x86_handle(void *ptr, struct s_macho *macho)
 {
-	int							i;
+	int	i;
 
 	i = -1;
 	macho->x86o.header = (struct mach_header *)ptr;
@@ -73,6 +85,6 @@ void ot_x86_handle(void *ptr, struct s_macho *macho)
 			if (get_text_section32(ptr, macho) < 0)
 				return ;
 		macho->x86o.lc = (void *)macho->x86o.lc +
-							macho->x86o.lc->cmdsize;
+						macho->x86o.lc->cmdsize;
 	}
 }

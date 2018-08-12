@@ -6,7 +6,7 @@
 /*   By: nsimonov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/11 19:08:00 by nsimonov          #+#    #+#             */
-/*   Updated: 2018/08/11 19:15:41 by nsimonov         ###   ########.fr       */
+/*   Updated: 2018/08/12 13:47:46 by nsimonov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,15 @@ int		set_arch(void *ptr, t_macho *macho)
 
 	magic_number = *(uint32_t *)ptr;
 	if (magic_number == MH_MAGIC || magic_number == MH_CIGAM)
-		return ((macho->program == NM) ? (macho->arch = x86, x86) :
-				(macho->arch = x86, x86_OTOOL));
+	{
+		macho->arch = x86;
+		return (macho->program == NM ? (x86) : (x86_OTOOL));
+	}
 	else if (magic_number == MH_MAGIC_64 || magic_number == MH_CIGAM_64)
-		return ((macho->program == NM) ? (macho->arch = x86_64, x86_64) :
-				(macho->arch = x86_64, x86_64_OTOOL));
+	{
+		macho->arch = x86_64;
+		return (macho->program == NM ? (x86_64) : (x86_64_OTOOL));
+	}
 	else if (magic_number == FAT_MAGIC || magic_number == FAT_CIGAM)
 		return (FAT);
 	else
@@ -57,28 +61,6 @@ int		mmap_obj(t_macho *macho, int prog)
 	macho->obj_ptr = ptr;
 	macho->handle_arch[set_arch(ptr, macho)](ptr, macho);
 	return (0);
-}
-
-void	init(t_macho *obj, uint32_t prog)
-{
-	const unsigned char	*ch_types = (unsigned char *)"abditus?";
-
-	obj->handle_arch[x86] = handle_x86_arch;
-	obj->handle_arch[x86_64] = handle_x86_64_arch;
-	obj->handle_arch[FAT] = handle_fat;
-	obj->handle_arch[x86_OTOOL] = ot_x86_handle;
-	obj->handle_arch[x86_64_OTOOL] = ot_x86_64_handle;
-	obj->handle_arch[UNKNOWN] = unknown_nm;
-	obj->handle_arch[UNKNOWN_OTOOL] = unknown_otool;
-	obj->swaped = 0;
-	obj->program = prog;
-	obj->x86_64o.seg_info = NULL;
-	obj->x86_64o.obj = NULL;
-	obj->x86o.seg_info = NULL;
-	obj->x86_64o.obj = NULL;
-	obj->args_num = 0;
-	obj->fat = 0;
-	obj->type_charests = ch_types;
 }
 
 int		with_args(int argc, char **argv, t_macho *macho, int prog)

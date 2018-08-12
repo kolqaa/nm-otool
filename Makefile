@@ -12,7 +12,7 @@ CFLAGS = -Wall -Wextra -Werror
 SRC_NM =	$(SRC)ft_nm.c \
 		$(SRC)errors.c \
 		$(SRC)print_functions.c \
-		$(SRC)list_functions.c \
+		$(SRC)free_init.c \
 		$(SRC)section_types.c \
 		$(SRC)handle_x86_64.c \
 		$(SRC)handle_fat.c \
@@ -26,7 +26,7 @@ SRC_NM =	$(SRC)ft_nm.c \
 SRC_OTOOL =	$(SRC)ft_otool.c \
 		$(SRC)errors.c \
 		$(SRC)print_functions.c \
-		$(SRC)list_functions.c \
+		$(SRC)free_init.c \
 		$(SRC)section_types.c \
 		$(SRC)handle_x86_64.c \
 		$(SRC)handle_fat.c \

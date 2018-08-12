@@ -6,11 +6,33 @@
 /*   By: nsimonov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/11 18:22:37 by nsimonov          #+#    #+#             */
-/*   Updated: 2018/08/11 18:24:19 by nsimonov         ###   ########.fr       */
+/*   Updated: 2018/08/12 13:46:43 by nsimonov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ft_nm.h"
+
+void			init(t_macho *obj, uint32_t prog)
+{
+	const unsigned char *ch_types = (unsigned char *)"abditus?";
+
+	obj->handle_arch[x86] = handle_x86_arch;
+	obj->handle_arch[x86_64] = handle_x86_64_arch;
+	obj->handle_arch[FAT] = handle_fat;
+	obj->handle_arch[x86_OTOOL] = ot_x86_handle;
+	obj->handle_arch[x86_64_OTOOL] = ot_x86_64_handle;
+	obj->handle_arch[UNKNOWN] = unknown_nm;
+	obj->handle_arch[UNKNOWN_OTOOL] = unknown_otool;
+	obj->swaped = 0;
+	obj->program = prog;
+	obj->x86_64o.seg_info = NULL;
+	obj->x86_64o.obj = NULL;
+	obj->x86o.seg_info = NULL;
+	obj->x86_64o.obj = NULL;
+	obj->args_num = 0;
+	obj->fat = 0;
+	obj->type_charests = ch_types;
+}
 
 static void		free_file(t_macho_info *obj)
 {

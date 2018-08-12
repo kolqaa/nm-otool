@@ -6,7 +6,7 @@
 /*   By: nsimonov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/11 19:20:25 by nsimonov          #+#    #+#             */
-/*   Updated: 2018/08/11 19:21:15 by nsimonov         ###   ########.fr       */
+/*   Updated: 2018/08/12 13:24:40 by nsimonov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,23 +42,18 @@ char			get_type(unsigned char c, unsigned char s, t_macho *obj)
 
 	a = APPLAY_MASK(c);
 	if (a == N_UNDF)
-		//'u';
 		a = obj->type_charests[U_TYPE];
 	else if (a == N_SECT)
 		a = get_by_section(s, obj);
 	else if (a == N_ABS)
-		//'a';
 		a = obj->type_charests[ABS];
 	else if (a == N_INDR)
-		//'i';
 		a = obj->type_charests[INDIR];
 	else if (a == N_PBUD)
-		//'u';
 		a = obj->type_charests[U_TYPE];
 	else
 		a = obj->type_charests[UNKNOWN_T];
-	//'?';
-	if (NOT_EXTERNAL_SYM(c,a))
+	if (NOT_EXTERNAL_SYM(c, a))
 		c = ft_toupper(a);
 	else
 		return (a);

@@ -6,7 +6,7 @@
 /*   By: nsimonov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/11 18:25:00 by nsimonov          #+#    #+#             */
-/*   Updated: 2018/08/11 18:29:05 by nsimonov         ###   ########.fr       */
+/*   Updated: 2018/08/12 13:23:50 by nsimonov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ static int	display_otool64(struct section_64 *sec, char *ptr, char *str)
 			ft_putchar('\n');
 		i++;
 	}
-	return ((ft_putchar('\n'), 0));
+	return (0);
 }
 
 static int	get_text_section64(void *ptr, t_macho *macho)
@@ -84,7 +84,6 @@ static int	get_text_section64(void *ptr, t_macho *macho)
 	char	*str;
 
 	i = -1;
-	str = NULL;
 	macho->x86_64o.seg = (struct segment_command_64 *)macho->x86_64o.lc;
 	macho->x86_64o.nsects = macho->x86_64o.seg->nsects;
 	macho->x86_64o.sect = (void *)macho->x86_64o.seg +
@@ -100,6 +99,7 @@ static int	get_text_section64(void *ptr, t_macho *macho)
 			if (display_otool64(macho->x86_64o.sect, ptr +
 					macho->x86_64o.sect->offset, str) == -1)
 				return (nm_error(macho->name, EINVAL_DUMP, OTOOL));
+			ft_putchar('\n');
 		}
 		macho->x86_64o.sect = (void *)macho->x86_64o.sect +
 				sizeof(*(macho->x86_64o.sect));
