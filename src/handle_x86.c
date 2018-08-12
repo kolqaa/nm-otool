@@ -6,7 +6,7 @@
 /*   By: nsimonov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/11 18:16:25 by nsimonov          #+#    #+#             */
-/*   Updated: 2018/08/11 18:18:38 by nsimonov         ###   ########.fr       */
+/*   Updated: 2018/08/12 15:55:21 by nsimonov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,26 +63,26 @@ int		add_symtab32_help(int i, char *str, t_macho *macho)
 	t_macho_info	*tmp;
 
 	if (get_type(macho->x86o.el[i].n_type,
-				macho->x86o.el[i].n_sect, macho) == '?' ||
+	macho->x86o.el[i].n_sect, macho, macho->x86o.el[i].n_value) == '?' ||
 			!ft_strlen(str + macho->x86o.el[i].n_un.n_strx))
 		return (0);
 	if ((tmp = (t_macho_info *)malloc(sizeof(t_macho_info))) == NULL)
 		return (nm_error(macho->name, ENOMEM, NM));
 	tmp->name = ft_strdup(str + macho->x86o.el[i].n_un.n_strx);
 	tmp->type = get_type(macho->x86o.el[i].n_type,
-			macho->x86o.el[i].n_sect, macho);
-	tmp->value = 0;
+			macho->x86o.el[i].n_sect, macho, macho->x86o.el[i].n_value);
 	tmp->arch = x86;
 	tmp->next = NULL;
-	if (macho->x86o.el[i].n_value)
-		tmp->value = (unsigned long)macho->x86o.el[i].n_value;
-	tmp->displayable = 0;
-	if (SYM_DISPLAYABLE(macho->x86o.el[i]))
+	!macho->x86o.el[i].n_value ? (tmp->value = 0) :
+		(tmp->value = (unsigned long)macho->x86o.el[i].n_value);
+	if (((macho->x86o.el[i].n_type & N_TYPE) == N_UNDF) && tmp->value != 0)
 		tmp->displayable = 1;
-	if (macho->x86o.obj)
-		make_order_align(&macho->x86o.obj, tmp);
+	else if (SYM_DISPLAYABLE(macho->x86o.el[i]))
+		tmp->displayable = 1;
 	else
-		macho->x86o.obj = tmp;
+		tmp->displayable = 0;
+	macho->x86o.obj ? make_order_align(&macho->x86o.obj, tmp) :
+					(macho->x86o.obj = tmp);
 	return (0);
 }
 

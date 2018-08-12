@@ -6,7 +6,7 @@
 /*   By: nsimonov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/11 18:30:12 by nsimonov          #+#    #+#             */
-/*   Updated: 2018/08/11 18:59:44 by nsimonov         ###   ########.fr       */
+/*   Updated: 2018/08/12 14:48:36 by nsimonov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,7 +145,6 @@ typedef struct		s_macho
 						struct s_macho *macho);
 }					t_macho;
 
-/* I/O function */
 void				ft_bzero(void *str, size_t n);
 size_t				ft_strlen(const char *str);
 char				*ft_strdup(const char *str);
@@ -159,8 +158,9 @@ void				display_nm(t_macho *macho, int ar);
 int					ft_strncmp(const char *s1, const char *s2, size_t n);
 int					ft_strcmp(const char *s1, const char *s2);
 int					ft_toupper(int c);
+char				*ft_itoa_base(int val, int base, int output_size);
+char				read_tab(int i);
 
-/* read and mmap file function */
 int					mmap_obj(t_macho *macho, int prog);
 int					get_file(char *file, t_macho *macho, int prog);
 void				reinit_obj(t_macho *macho);
@@ -168,31 +168,17 @@ void				init(t_macho *obj, uint32_t prog);
 int					with_args(int argc, char **argv, t_macho *macho, int prog);
 int					no_args(t_macho *macho, int prog);
 
-/* sorting function */
 void				make_order_align(t_macho_info **file, t_macho_info *tmp);
-
-/* process files with x86_64 arch */
 
 void				handle_x86_64_arch(void *ptr, t_macho *macho);
 char				get_type_by_sect(unsigned char s, t_macho *macho);
-char				get_type(unsigned char c, unsigned char s, t_macho *macho);
+char				get_type(unsigned char c, unsigned char s, t_macho *macho, unsigned long n_value);
 int					set_arch(void *ptr, t_macho *macho);
-
-/* FAT arch */
-
 void				handle_fat(void *ptr, t_macho *macho);
-
-/* process files with x86 arch */
-
 void				handle_x86_arch(void *ptr, t_macho *macho);
-
-/* otool function */
 void				ot_x86_64_handle(void *ptr, struct s_macho *macho);
 void				ot_x86_handle(void *ptr, struct s_macho *macho);
-char				*ft_itoa_base(int val, int base, int output_size);
-char				read_tab(int i);
 
-/* error func */
 void				unknown_nm(void *ptr, t_macho *macho);
 void				unknown_otool(void *ptr, t_macho *macho);
 

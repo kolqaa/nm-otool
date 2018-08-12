@@ -6,7 +6,7 @@
 /*   By: nsimonov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/11 19:20:25 by nsimonov          #+#    #+#             */
-/*   Updated: 2018/08/12 13:24:40 by nsimonov         ###   ########.fr       */
+/*   Updated: 2018/08/12 15:54:46 by nsimonov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,18 @@ unsigned char	get_by_section(unsigned char s, t_macho *macho)
 	return (macho->type_charests[S_TYPE]);
 }
 
-char			get_type(unsigned char c, unsigned char s, t_macho *obj)
+char			get_type(unsigned char c, unsigned char s, t_macho *obj,
+						unsigned long n_value)
 {
 	unsigned char	a;
 
 	a = APPLAY_MASK(c);
 	if (a == N_UNDF)
+	{
 		a = obj->type_charests[U_TYPE];
+		if (n_value != 0)
+			a = 'c';
+	}
 	else if (a == N_SECT)
 		a = get_by_section(s, obj);
 	else if (a == N_ABS)

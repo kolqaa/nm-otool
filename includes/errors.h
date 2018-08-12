@@ -6,7 +6,7 @@
 /*   By: nsimonov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/11 18:01:26 by nsimonov          #+#    #+#             */
-/*   Updated: 2018/08/11 19:20:15 by nsimonov         ###   ########.fr       */
+/*   Updated: 2018/08/12 14:17:07 by nsimonov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # define IS_DIR_ERR "Is a directory.\n"
 # define OBJ_ERR "The file was not recognized as a valid object file.\n"
 # define FSTAT_ERR "Fstat error.\n"
-# define OPEN_ERR "Can't open file.\n"
+# define OPEN_ERR "No such file or directory.\n"
 # define EMPTY_ERR "File is empty.\n"
 # define MMAP_ERR "Failed to allocate memory\n"
 # define SYMTAB_ERR "Fails during parsing LC_SYMTAB section\n"
@@ -41,8 +41,6 @@ struct					s_nm_err
 	int			code;
 	const char	*err_msg;
 }						t_nm_err;
-
-
 
 extern struct s_nm_err nm_err_info[];
 
