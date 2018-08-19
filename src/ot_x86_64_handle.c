@@ -64,7 +64,7 @@ static int	display_otool64(struct section_64 *sec, char *ptr, char *str)
 				addr += HEX_BASE;
 			put_zeros(x86_64_BASE_ZERO, addr);
 			print_addr(addr);
-			ft_putstr("        ");
+			ft_putstr("\t");
 		}
 		if ((str = ft_itoa_base(ptr[i], HEX_BASE, 2)) == NULL)
 			return (-1);

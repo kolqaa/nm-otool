@@ -18,6 +18,7 @@
 # include <mach-o/nlist.h>
 # include <mach-o/fat.h>
 # include <mach-o/ranlib.h>
+# include <mach/machine.h>
 # include <fcntl.h>
 # include <sys/stat.h>
 # include <stdlib.h>
@@ -29,12 +30,12 @@
 # define NOT_EXTERNAL_SYM(a,b) (a & N_EXT && b != '?')
 # define FIND_SEGMENT(seg) ({ while(seg->next) seg = seg->next;})
 # define SYM_DISPLAYABLE(el) ((el.n_type & N_TYPE) != N_UNDF)
-
-# define S24(val) ((val & 0xFF000000) >> 24)
-# define S8(val) ((val & 0x00FF0000) >> 8)
-# define S8_H(val) ((val & 0x0000FF00) << 8)
-# define S24_H(val) ((val & 0x000000FF) << 24)
-# define BIG_LITTLE(r, v) (r |= (S24_H(v)) | (S8_H(v)) | (S8(v) | S24(v)))
+ 
+# define HS24(val) ((val & 0xFF000000) >> 24)
+# define HS8(val)  ((val & 0x00FF0000) >> 8)
+# define SH8(val)  ((val & 0x0000FF00) << 8)
+# define SH24(val) ((val & 0x000000FF) << 24)
+# define SWAP_ENDIANESS(val) ((SH24(val)  | SH8(val) | HS8(val) | HS24(val)))
 
 typedef enum		e_prog
 {
@@ -136,6 +137,7 @@ typedef struct		s_macho
 	t_x86_64			x86_64o;
 
 	void				*obj_ptr;
+	void				*max_len;
 	char				*name;
 	struct stat			buf;
 	const unsigned char	*type_charests;

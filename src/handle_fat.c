@@ -14,26 +14,20 @@
 
 void	handle_fat(void *ptr, t_macho *macho)
 {
-	int					i;
-	int					narch;
-	uint32_t			offset;
-	struct fat_header	*fat;
-	struct fat_arch		*arch;
+	uint64_t	nfat_arch;
+	uint64_t	i;
+	void		*fat_arch;
+	uint32_t	offset;
 
+	nfat_arch = ((struct fat_header*)ptr)->nfat_arch;
+	nfat_arch = SWAP_ENDIANESS(nfat_arch);
 	i = 0;
-	narch = 0;
-	offset = 0;
-	fat = (struct fat_header *)macho->obj_ptr;
-	arch = (void *)fat + sizeof(fat);
-	BIG_LITTLE(narch, fat->nfat_arch);
-	macho->fat = 1;
-	while (i < narch)
+	while (i < nfat_arch)
 	{
-		macho->swaped = 0;
-		if (BIG_LITTLE(macho->swaped, arch->cputype) == CPU_TYPE_X86_64)
-			BIG_LITTLE(offset, arch->offset);
-		arch = (void *)arch + sizeof(*arch);
+		fat_arch = ((void*)ptr + sizeof(struct fat_header))
+                                  + (i * sizeof(struct fat_arch));
+		offset = SWAP_ENDIANESS(((struct fat_arch *)fat_arch)->offset);
+         	macho->handle_arch[set_arch(ptr + offset, macho)](ptr + offset, macho);
 		i++;
 	}
-	macho->handle_arch[set_arch(ptr + offset, macho)](ptr + offset, macho);
 }

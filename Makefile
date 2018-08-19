@@ -19,7 +19,7 @@ INC = ./includes/
 
 CC = gcc
 
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -g -Wall -Wextra -Werror
 
 SRC_NM =	$(SRC)ft_nm.c \
 		$(SRC)errors.c \

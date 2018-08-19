@@ -12,9 +12,15 @@
 
 #include "../includes/ft_nm.h"
 #include "../includes/errors.h"
+#include <unistd.h>
 
 int	main(int argc, char **argv)
 {
+	/* TODO: out of bounds 
+	 * ptr + size of the file 
+	 * malformed file
+	 * */
+
 	t_macho macho;
 
 	init(&macho, NM);
