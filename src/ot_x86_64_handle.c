@@ -55,6 +55,8 @@ static int	display_otool64(struct section_64 *sec, char *ptr, char *str)
 	long unsigned int	addr;
 
 	i = 0;
+	if (check_malformed(ptr, macho))
+		return -1;
 	addr = (long unsigned int)sec->addr;
 	while (i < sec->size)
 	{
@@ -80,14 +82,16 @@ static int	display_otool64(struct section_64 *sec, char *ptr, char *str)
 
 static int	get_text_section64(void *ptr, t_macho *macho)
 {
-	int		i;
+	uint32_t		i;
 
-	i = -1;
+	i = 0;
 	macho->x86_64o.seg = (struct segment_command_64 *)macho->x86_64o.lc;
 	macho->x86_64o.nsects = macho->x86_64o.seg->nsects;
 	macho->x86_64o.sect = (void *)macho->x86_64o.seg +
 			sizeof(*(macho->x86_64o.seg));
-	while (++i < macho->x86_64o.nsects)
+	if (check_malformed(macho->x86_64o.sect, macho))
+		return -1;
+	while (i < macho->x86_64o.nsects)
 	{
 		if (!ft_strcmp(macho->x86_64o.sect->segname, "__TEXT")
 			&& !ft_strcmp(macho->x86_64o.sect->sectname, "__text"))
@@ -101,25 +105,33 @@ static int	get_text_section64(void *ptr, t_macho *macho)
 			ft_putchar('\n');
 		}
 		macho->x86_64o.sect = (void *)macho->x86_64o.sect +
-				sizeof(*(macho->x86_64o.sect));
+				(i * sizeof(*(macho->x86_64o.sect)));
+		if (check_malformed(macho->x86_64o.sect, macho))
+			return -1;
+		i++;
 	}
 	return (0);
 }
 
 void		ot_x86_64_handle(void *ptr, struct s_macho *macho)
 {
-	int	i;
+	uint32_t	i;
 
-	i = -1;
+	i = 0;
 	macho->x86_64o.header = (struct mach_header_64 *)ptr;
 	macho->x86_64o.ncmds = macho->x86_64o.header->ncmds;
 	macho->x86_64o.lc = ptr + sizeof(*(macho->x86_64o.header));
-	while (++i < macho->x86_64o.ncmds)
+	if (check_malformed(macho->x86_64o.lc, macho))
+		return 0;
+	while (i < macho->x86_64o.ncmds)
 	{
 		if (macho->x86_64o.lc->cmd == LC_SEGMENT_64)
 			if (get_text_section64(ptr, macho) < 0)
 				return ;
 		macho->x86_64o.lc = (void *)macho->x86_64o.lc +
 				macho->x86_64o.lc->cmdsize;
+		if (check_malformed(macho->x86_64o.lc, macho))
+			return ;
+		i++;
 	}
 }

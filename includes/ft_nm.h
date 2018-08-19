@@ -93,8 +93,8 @@ typedef struct		s_macho_info
 typedef struct		s_x86
 {
 	int							arch;
-	int							ncmds;
-	int							nsects;
+	uint32_t						ncmds;
+	uint32_t						nsects;
 
 	struct nlist				*el;
 	struct section				*sect;
@@ -109,9 +109,9 @@ typedef struct		s_x86
 
 typedef struct		s_x86_64
 {
-	int							arch;
-	int							ncmds;
-	int							nsects;
+	int						arch;
+	uint32_t					ncmds;
+	uint32_t					nsects;
 
 	struct nlist_64				*el;
 	struct section_64			*sect;
@@ -131,7 +131,7 @@ typedef struct		s_macho
 	int					ptr_size;
 	int					fat;
 	int					arch;
-	uint32_t			swaped;
+	uint32_t			i;
 
 	t_x86				x86o;
 	t_x86_64			x86_64o;
@@ -184,5 +184,6 @@ void				ot_x86_handle(void *ptr, struct s_macho *macho);
 
 void				unknown_nm(void *ptr, t_macho *macho);
 void				unknown_otool(void *ptr, t_macho *macho);
+int				check_malformed(void *ptr, t_macho *macho);
 
 #endif

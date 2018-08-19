@@ -23,7 +23,6 @@ void			init(t_macho *obj, uint32_t prog)
 	obj->handle_arch[x86_64_OTOOL] = ot_x86_64_handle;
 	obj->handle_arch[UNKNOWN] = unknown_nm;
 	obj->handle_arch[UNKNOWN_OTOOL] = unknown_otool;
-	obj->swaped = 0;
 	obj->program = prog;
 	obj->x86_64o.seg_info = NULL;
 	obj->x86_64o.obj = NULL;

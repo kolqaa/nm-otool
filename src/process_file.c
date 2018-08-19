@@ -59,6 +59,7 @@ int		mmap_obj(t_macho *macho, int prog)
 				macho->fd, 0)) == MAP_FAILED)
 		return (nm_error(macho->name, ENOMEM, prog));
 	macho->obj_ptr = ptr;
+	macho->max_len = ptr + macho->buf.st_size;
 	macho->handle_arch[set_arch(ptr, macho)](ptr, macho);
 	return (0);
 }

@@ -37,6 +37,16 @@ static void		print_error(const char *err_msg, char *file_name, int prog)
 	ft_putstr(err_msg);
 }
 
+int check_malformed(void *ptr, t_macho *macho)
+{
+	if (ptr > macho->max_len)
+	{
+		ft_putstr("malformed file\n");
+		return 1;
+	}
+	return 0;
+}
+
 int				nm_error(char *file, int nm_err_code, int prog)
 {
 	int i;

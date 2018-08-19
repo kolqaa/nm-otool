@@ -47,5 +47,4 @@ struct					s_nm_err
 extern struct s_nm_err nm_err_info[];
 
 int						nm_error(char *file, int nm_err_code, int prog);
-
 #endif
