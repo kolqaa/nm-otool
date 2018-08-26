@@ -12,6 +12,7 @@
 
 #include "../includes/ft_nm.h"
 
+
 void	handle_fat(void *ptr, t_macho *macho)
 {
 	uint64_t	nfat_arch;
@@ -38,7 +39,8 @@ void	handle_fat(void *ptr, t_macho *macho)
 			offset = SWAP_ENDIANESS(((struct fat_arch *)fat_arch)->offset);
 			if (check_malformed(ptr + offset, macho))
 				return ;
-         	macho->handle_arch[set_arch(ptr + offset, macho)](ptr + offset, macho);
+			macho->handle_arch[set_arch(ptr + offset, macho)](ptr + offset, macho);
+			reinit_obj(macho, 1);
 		}
 		cpu_type = 0;
 		i++;

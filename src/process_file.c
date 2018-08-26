@@ -85,7 +85,7 @@ int		with_args(int argc, char **argv, t_macho *macho, int prog)
 			ret = -1;
 			continue;
 		}
-		reinit_obj(macho);
+		reinit_obj(macho, 0);
 	}
 	return (ret);
 }
@@ -98,6 +98,6 @@ int		no_args(t_macho *macho, int prog)
 		return (-1);
 	if (mmap_obj(macho, prog) < 0)
 		return (-1);
-	reinit_obj(macho);
+	reinit_obj(macho, 0);
 	return (0);
 }

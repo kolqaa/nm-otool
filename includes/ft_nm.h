@@ -165,7 +165,7 @@ char				read_tab(int i);
 
 int					mmap_obj(t_macho *macho, int prog);
 int					get_file(char *file, t_macho *macho, int prog);
-void				reinit_obj(t_macho *macho);
+void				reinit_obj(t_macho *macho, int part);
 void				init(t_macho *obj, uint32_t prog);
 int					with_args(int argc, char **argv, t_macho *macho, int prog);
 int					no_args(t_macho *macho, int prog);

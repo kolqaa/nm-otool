@@ -55,8 +55,9 @@ static int		add_segment64_node(void *lc, t_macho *macho)
 		if (add_segment64_help(macho) < 0)
 			return (nm_error(macho->name, EINVAL_SEG, NM));
 		macho->x86_64o.sect = (void *)macho->x86_64o.sect +
-			(i * sizeof(*(macho->x86_64o.sect)));
-		if (check_malformed(macho->x86_64o.sect, macho))
+			 sizeof(*(macho->x86_64o.sect));
+		if (check_malformed((void*)macho->x86_64o.sect +
+			(i * sizeof(*(macho->x86_64o.sect))), macho))
 			return -1;
 		i++;
 	}
@@ -73,8 +74,6 @@ static int		add_symtab64_help(int i, char *str, t_macho *macho)
 		return (0);
 	if ((tmp = (t_macho_info *)malloc(sizeof(t_macho_info))) == NULL)
 		return (nm_error(macho->name, ENOMEM, NM));
-	if (check_malformed(str + macho->x86_64o.el[i].n_un.n_strx, macho))
-		return 0;
 	tmp->name = ft_strdup(str + macho->x86_64o.el[i].n_un.n_strx);
 	tmp->type = get_type(macho->x86_64o.el[i].n_type,
 		macho->x86_64o.el[i].n_sect, macho, macho->x86_64o.el[i].n_value);

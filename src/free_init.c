@@ -53,23 +53,30 @@ static void		free_sect(t_segment_info *obj_seg)
 	}
 }
 
-void			reinit_obj(t_macho *macho)
+void			reinit_obj(t_macho *macho, int part)
 {
+
 	if (macho->x86_64o.seg_info)
 		free_sect(macho->x86_64o.seg_info);
 	if (macho->x86_64o.obj)
 		free_file(macho->x86_64o.obj);
+
 	if (macho->x86o.seg_info)
 		free_sect(macho->x86o.seg_info);
 	if (macho->x86o.obj)
 		free_file(macho->x86o.obj);
-	close(macho->fd);
-	munmap(macho->obj_ptr, macho->ptr_size);
-	macho->fat = 0;
-	macho->x86_64o.seg_info = NULL;
+
 	macho->x86_64o.obj = NULL;
 	macho->x86o.obj = NULL;
+	macho->x86_64o.seg_info = NULL;
 	macho->x86o.seg_info = NULL;
+	if (!part) {
+		close(macho->fd);
+		munmap(macho->obj_ptr, macho->ptr_size);
+		macho->fat = 0;
+		macho->x86_64o.obj = NULL;
+		macho->x86o.obj = NULL;
+	}
 }
 
 void			make_order_align(t_macho_info **macho, t_macho_info *tmp)

@@ -55,8 +55,6 @@ static int	display_otool64(struct section_64 *sec, char *ptr, char *str)
 	long unsigned int	addr;
 
 	i = 0;
-	if (check_malformed(ptr, macho))
-		return -1;
 	addr = (long unsigned int)sec->addr;
 	while (i < sec->size)
 	{
@@ -105,8 +103,9 @@ static int	get_text_section64(void *ptr, t_macho *macho)
 			ft_putchar('\n');
 		}
 		macho->x86_64o.sect = (void *)macho->x86_64o.sect +
-				(i * sizeof(*(macho->x86_64o.sect)));
-		if (check_malformed(macho->x86_64o.sect, macho))
+				 sizeof(*(macho->x86_64o.sect));
+		if (check_malformed((void *)macho->x86_64o.sect +
+					(i * sizeof(*(macho->x86_64o.sect))), macho))
 			return -1;
 		i++;
 	}
@@ -122,7 +121,7 @@ void		ot_x86_64_handle(void *ptr, struct s_macho *macho)
 	macho->x86_64o.ncmds = macho->x86_64o.header->ncmds;
 	macho->x86_64o.lc = ptr + sizeof(*(macho->x86_64o.header));
 	if (check_malformed(macho->x86_64o.lc, macho))
-		return 0;
+		return ;
 	while (i < macho->x86_64o.ncmds)
 	{
 		if (macho->x86_64o.lc->cmd == LC_SEGMENT_64)

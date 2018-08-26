@@ -55,7 +55,8 @@ int		add_segment32_node(void *lc, t_macho *macho)
 			return (nm_error(macho->name, EINVAL_SEG, NM));
 		macho->x86o.sect = (void *)macho->x86o.sect +
 				sizeof(*(macho->x86o.sect));
-		if (check_malformed(macho->x86o.sect, macho))
+		if (check_malformed((void*)macho->x86o.sect +
+				(i* sizeof(*(macho->x86_64o.sect))), macho))
 			return 0;
 		i++;
 	}

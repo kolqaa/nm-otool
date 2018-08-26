@@ -20,8 +20,6 @@ static int		display_otool32(struct section *sec, char *ptr, char *str)
 
 	i = 0;
 	addr = (long unsigned int)sec->addr;
-	if (check_malformed(ptr, macho))
-                  return -1;
 	while (i < sec->size)
 	{
 		if (i == 0 || i % HEX_BASE == 0)
@@ -69,8 +67,9 @@ static int		get_text_section32(void *ptr, t_macho *macho)
 			ft_putchar('\n');
 		}
 		macho->x86o.sect = (void *)macho->x86o.sect +
-					(i * sizeof(*(macho->x86o.sect)));
-		if (check_malformed(macho->x86o.sect, macho))
+					 sizeof(*(macho->x86o.sect));
+		if (check_malformed((void *)macho->x86o.sect +
+					(i * sizeof(*(macho->x86o.sect))), macho))
                   	return -1;
 		i++;
 	}
