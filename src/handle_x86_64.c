@@ -6,7 +6,7 @@
 /*   By: nsimonov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/11 18:18:47 by nsimonov          #+#    #+#             */
-/*   Updated: 2018/08/12 15:53:25 by nsimonov         ###   ########.fr       */
+/*   Updated: 2018/08/26 13:46:15 by nsimonov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,16 +49,16 @@ static int		add_segment64_node(void *lc, t_macho *macho)
 	macho->x86_64o.sect = (void*)macho->x86_64o.seg +
 						sizeof(*(macho->x86_64o.seg));
 	if (check_malformed(macho->x86_64o.sect, macho))
-		return -1;
+		return (-1);
 	while (i < macho->x86_64o.nsects)
 	{
 		if (add_segment64_help(macho) < 0)
 			return (nm_error(macho->name, EINVAL_SEG, NM));
 		macho->x86_64o.sect = (void *)macho->x86_64o.sect +
-			 sizeof(*(macho->x86_64o.sect));
+			sizeof(*(macho->x86_64o.sect));
 		if (check_malformed((void*)macho->x86_64o.sect +
 			(i * sizeof(*(macho->x86_64o.sect))), macho))
-			return -1;
+			return (-1);
 		i++;
 	}
 	return (0);
@@ -100,10 +100,10 @@ static int		add_symtab64_node(void *ptr, t_macho *obj)
 	i = 0;
 	obj->x86_64o.el = ptr + obj->x86_64o.sym->symoff;
 	if (check_malformed(obj->x86_64o.el, obj))
-		return -1;
+		return (-1);
 	str = ptr + obj->x86_64o.sym->stroff;
 	if (check_malformed(str, obj))
-		return -1;
+		return (-1);
 	while (i < (int)obj->x86_64o.sym->nsyms)
 	{
 		if (add_symtab64_help(i, str, obj) < 0)
@@ -113,36 +113,31 @@ static int		add_symtab64_node(void *ptr, t_macho *obj)
 	return (0);
 }
 
-#include <stdio.h>
-
-void			handle_x86_64_arch(void *ptr, t_macho *macho)
+void			handle_x86_64_arch(void *ptr, t_macho *m)
 {
 	uint32_t	i;
 
 	i = 0;
-	macho->x86_64o.header = (struct mach_header_64 *)ptr;
-	macho->x86_64o.ncmds = macho->x86_64o.header->ncmds;
-	macho->x86_64o.lc = ptr + sizeof(*(macho->x86_64o.header));
-	if (check_malformed(macho->x86_64o.lc, macho))
-                return ;
-	while (i < macho->x86_64o.ncmds)
+	if (help_for_handle64(m, ptr) < 0)
+		return ;
+	if (check_malformed(m->x86_64o.lc, m))
+		return ;
+	while (i < m->x86_64o.ncmds)
 	{
-		
-		if (macho->x86_64o.lc->cmd == LC_SEGMENT_64)
-			if (add_segment64_node(macho->x86_64o.lc, macho) < 0)
+		if (m->x86_64o.lc->cmd == LC_SEGMENT_64)
+			if (add_segment64_node(m->x86_64o.lc, m) < 0)
 				return ;
-		if (macho->x86_64o.lc->cmd == LC_SYMTAB)
+		if (m->x86_64o.lc->cmd == LC_SYMTAB)
 		{
-			macho->x86_64o.sym = (struct symtab_command *)macho->x86_64o.lc;
-			if (add_symtab64_node(ptr, macho) < 0)
+			m->x86_64o.sym = (struct symtab_command *)m->x86_64o.lc;
+			if (add_symtab64_node(ptr, m) < 0)
 				return ;
 			break ;
 		}
-		macho->x86_64o.lc = (void *)macho->x86_64o.lc +
-							macho->x86_64o.lc->cmdsize;
-		if (check_malformed(macho->x86_64o.lc, macho))
-	                return ;
+		m->x86_64o.lc = (void *)m->x86_64o.lc + m->x86_64o.lc->cmdsize;
+		if (check_malformed(m->x86_64o.lc, m))
+			return ;
 		i++;
 	}
-	display_nm(macho, x86_64);
+	display_nm(m, x86_64);
 }

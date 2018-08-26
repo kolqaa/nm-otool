@@ -6,7 +6,7 @@
 /*   By: nsimonov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/11 18:16:25 by nsimonov          #+#    #+#             */
-/*   Updated: 2018/08/12 15:55:21 by nsimonov         ###   ########.fr       */
+/*   Updated: 2018/08/26 13:07:36 by nsimonov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ int		add_segment32_node(void *lc, t_macho *macho)
 	macho->x86o.nsects = macho->x86o.seg->nsects;
 	macho->x86o.sect = (void*)macho->x86o.seg + sizeof(*(macho->x86o.seg));
 	if (check_malformed(macho->x86o.sect, macho))
-		return 0;
+		return (0);
 	while (i < macho->x86o.nsects)
 	{
 		if (add_segment32_help(macho) < 0)
@@ -56,14 +56,13 @@ int		add_segment32_node(void *lc, t_macho *macho)
 		macho->x86o.sect = (void *)macho->x86o.sect +
 				sizeof(*(macho->x86o.sect));
 		if (check_malformed((void*)macho->x86o.sect +
-				(i* sizeof(*(macho->x86_64o.sect))), macho))
-			return 0;
+				(i * sizeof(*(macho->x86_64o.sect))), macho))
+			return (0);
 		i++;
 	}
 	return (0);
 }
 
-/* TODO check malformd str +macho->el[i].un_n_strx) */
 int		add_symtab32_help(int i, char *str, t_macho *macho)
 {
 	t_macho_info	*tmp;
@@ -100,10 +99,10 @@ int		add_symtab32_node(void *ptr, t_macho *macho)
 	i = 0;
 	macho->x86o.el = ptr + macho->x86o.sym->symoff;
 	if (check_malformed(macho->x86o.el, macho))
-		return 0;
+		return (0);
 	str = ptr + macho->x86o.sym->stroff;
 	if (check_malformed(str, macho))
-		return 0;
+		return (0);
 	while (i < (int)macho->x86o.sym->nsyms)
 	{
 		if (add_symtab32_help(i, str, macho) < 0)
@@ -120,7 +119,7 @@ void	handle_x86_arch(void *ptr, t_macho *macho)
 	macho->x86o.ncmds = macho->x86o.header->ncmds;
 	macho->x86o.lc = ptr + sizeof(*(macho->x86o.header));
 	if (check_malformed(macho->x86o.lc, macho))
-                return ;
+		return ;
 	while (macho->i < macho->x86o.ncmds)
 	{
 		if (macho->x86o.lc->cmd == LC_SEGMENT)

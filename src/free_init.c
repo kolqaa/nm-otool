@@ -6,7 +6,7 @@
 /*   By: nsimonov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/11 18:22:37 by nsimonov          #+#    #+#             */
-/*   Updated: 2018/08/12 13:46:43 by nsimonov         ###   ########.fr       */
+/*   Updated: 2018/08/26 13:18:58 by nsimonov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,22 +55,20 @@ static void		free_sect(t_segment_info *obj_seg)
 
 void			reinit_obj(t_macho *macho, int part)
 {
-
 	if (macho->x86_64o.seg_info)
 		free_sect(macho->x86_64o.seg_info);
 	if (macho->x86_64o.obj)
 		free_file(macho->x86_64o.obj);
-
 	if (macho->x86o.seg_info)
 		free_sect(macho->x86o.seg_info);
 	if (macho->x86o.obj)
 		free_file(macho->x86o.obj);
-
 	macho->x86_64o.obj = NULL;
 	macho->x86o.obj = NULL;
 	macho->x86_64o.seg_info = NULL;
 	macho->x86o.seg_info = NULL;
-	if (!part) {
+	if (!part)
+	{
 		close(macho->fd);
 		munmap(macho->obj_ptr, macho->ptr_size);
 		macho->fat = 0;

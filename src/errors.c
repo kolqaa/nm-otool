@@ -6,7 +6,7 @@
 /*   By: nsimonov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/11 18:00:34 by nsimonov          #+#    #+#             */
-/*   Updated: 2018/08/12 16:24:12 by nsimonov         ###   ########.fr       */
+/*   Updated: 2018/08/26 13:17:19 by nsimonov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,14 @@ static void		print_error(const char *err_msg, char *file_name, int prog)
 	ft_putstr(err_msg);
 }
 
-int check_malformed(void *ptr, t_macho *macho)
+int				check_malformed(void *ptr, t_macho *macho)
 {
 	if (ptr > macho->max_len)
 	{
-		ft_putstr("malformed file\n");
-		return 1;
+		ft_putstr("truncated or malformed object\n");
+		return (1);
 	}
-	return 0;
+	return (0);
 }
 
 int				nm_error(char *file, int nm_err_code, int prog)

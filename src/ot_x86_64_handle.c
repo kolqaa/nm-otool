@@ -6,7 +6,7 @@
 /*   By: nsimonov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/11 18:25:00 by nsimonov          #+#    #+#             */
-/*   Updated: 2018/08/12 14:06:50 by nsimonov         ###   ########.fr       */
+/*   Updated: 2018/08/26 13:53:09 by nsimonov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,35 +78,30 @@ static int	display_otool64(struct section_64 *sec, char *ptr, char *str)
 	return (0);
 }
 
-static int	get_text_section64(void *ptr, t_macho *macho)
+static int	get_text_section64(void *ptr, t_macho *m)
 {
 	uint32_t		i;
 
 	i = 0;
-	macho->x86_64o.seg = (struct segment_command_64 *)macho->x86_64o.lc;
-	macho->x86_64o.nsects = macho->x86_64o.seg->nsects;
-	macho->x86_64o.sect = (void *)macho->x86_64o.seg +
-			sizeof(*(macho->x86_64o.seg));
-	if (check_malformed(macho->x86_64o.sect, macho))
-		return -1;
-	while (i < macho->x86_64o.nsects)
+	if (help_for_otool64(m) < 0)
+		return (-1);
+	while (i < m->x86_64o.nsects)
 	{
-		if (!ft_strcmp(macho->x86_64o.sect->segname, "__TEXT")
-			&& !ft_strcmp(macho->x86_64o.sect->sectname, "__text"))
+		if (!ft_strcmp(m->x86_64o.sect->segname, "__TEXT")
+			&& !ft_strcmp(m->x86_64o.sect->sectname, "__text"))
 		{
-			ft_putstr(macho->name);
+			ft_putstr(m->name);
 			ft_putstr(":\n");
 			ft_putstr("Contents of (__TEXT,__text) section\n");
-			if ((display_otool64(macho->x86_64o.sect, ptr +
-					macho->x86_64o.sect->offset, (char *) { NULL })) == -1)
-				return (nm_error(macho->name, EINVAL_DUMP, OTOOL));
+			if ((display_otool64(m->x86_64o.sect, ptr +
+					m->x86_64o.sect->offset, (char *) { NULL })) == -1)
+				return (nm_error(m->name, EINVAL_DUMP, OTOOL));
 			ft_putchar('\n');
 		}
-		macho->x86_64o.sect = (void *)macho->x86_64o.sect +
-				 sizeof(*(macho->x86_64o.sect));
-		if (check_malformed((void *)macho->x86_64o.sect +
-					(i * sizeof(*(macho->x86_64o.sect))), macho))
-			return -1;
+		m->x86_64o.sect = (void *)m->x86_64o.sect + sizeof(*(m->x86_64o.sect));
+		if (check_malformed((void *)m->x86_64o.sect +
+					(i * sizeof(*(m->x86_64o.sect))), m))
+			return (-1);
 		i++;
 	}
 	return (0);

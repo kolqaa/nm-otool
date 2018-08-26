@@ -6,7 +6,7 @@
 /*   By: nsimonov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/11 18:30:12 by nsimonov          #+#    #+#             */
-/*   Updated: 2018/08/12 16:24:39 by nsimonov         ###   ########.fr       */
+/*   Updated: 2018/08/26 13:58:54 by nsimonov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 # define NOT_EXTERNAL_SYM(a,b) (a & N_EXT && b != '?')
 # define FIND_SEGMENT(seg) ({ while(seg->next) seg = seg->next;})
 # define SYM_DISPLAYABLE(el) ((el.n_type & N_TYPE) != N_UNDF)
- 
+
 # define HS24(val) ((val & 0xFF000000) >> 24)
 # define HS8(val)  ((val & 0x00FF0000) >> 8)
 # define SH8(val)  ((val & 0x0000FF00) << 8)
@@ -93,8 +93,8 @@ typedef struct		s_macho_info
 typedef struct		s_x86
 {
 	int							arch;
-	uint32_t						ncmds;
-	uint32_t						nsects;
+	uint32_t					ncmds;
+	uint32_t					nsects;
 
 	struct nlist				*el;
 	struct section				*sect;
@@ -109,7 +109,7 @@ typedef struct		s_x86
 
 typedef struct		s_x86_64
 {
-	int						arch;
+	int							arch;
 	uint32_t					ncmds;
 	uint32_t					nsects;
 
@@ -172,7 +172,7 @@ int					no_args(t_macho *macho, int prog);
 
 void				make_order_align(t_macho_info **file, t_macho_info *tmp);
 
-void				handle_x86_64_arch(void *ptr, t_macho *macho);
+void				handle_x86_64_arch(void *ptr, t_macho *m);
 char				get_type_by_sect(unsigned char s, t_macho *macho);
 char				get_type(unsigned char c, unsigned char s, t_macho *macho,
 							unsigned long n_value);
@@ -184,6 +184,9 @@ void				ot_x86_handle(void *ptr, struct s_macho *macho);
 
 void				unknown_nm(void *ptr, t_macho *macho);
 void				unknown_otool(void *ptr, t_macho *macho);
-int				check_malformed(void *ptr, t_macho *macho);
+int					check_malformed(void *ptr, t_macho *macho);
+int					help_for_otool64(t_macho *macho);
+int					help_for_otool32(t_macho *macho);
+int					help_for_handle64(t_macho *macho, void *ptr);
 
 #endif

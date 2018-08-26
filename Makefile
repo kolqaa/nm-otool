@@ -6,7 +6,7 @@
 #    By: nsimonov <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/08/12 16:54:08 by nsimonov          #+#    #+#              #
-#    Updated: 2018/08/12 16:54:11 by nsimonov         ###   ########.fr        #
+#    Updated: 2018/08/26 13:32:53 by nsimonov         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,6 +34,7 @@ SRC_NM =	$(SRC)ft_nm.c \
 		$(SRC)process_file.c \
 		$(SRC)ot_x86_handle.c \
 		$(SRC)ot_x86_64_handle.c \
+		$(SRC)trash_for_norminette.c\
 
 SRC_OTOOL =	$(SRC)ft_otool.c \
 		$(SRC)errors.c \
@@ -48,6 +49,7 @@ SRC_OTOOL =	$(SRC)ft_otool.c \
 		$(SRC)process_file.c \
 		$(SRC)ot_x86_handle.c \
 		$(SRC)ot_x86_64_handle.c \
+		$(SRC)trash_for_norminette.c \
 
 OBJ_NM		= $(SRC_NM:.c=.o)
 OBJ_OTOOL	= $(SRC_OTOOL:.c=.o)

@@ -6,7 +6,7 @@
 /*   By: nsimonov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/11 18:11:30 by nsimonov          #+#    #+#             */
-/*   Updated: 2018/08/11 18:11:57 by nsimonov         ###   ########.fr       */
+/*   Updated: 2018/08/26 13:08:00 by nsimonov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,6 @@
 
 int	main(int argc, char **argv)
 {
-	/* TODO: out of bounds 
-	 * ptr + size of the file 
-	 * malformed file
-	 * */
-
 	t_macho macho;
 
 	init(&macho, NM);
