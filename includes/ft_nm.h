@@ -41,7 +41,7 @@ typedef enum		e_prog
 {
 	NM,
 	OTOOL
-}					t_e_prog;
+}			t_e_prog;
 
 typedef enum		e_file_arch
 {
@@ -52,7 +52,7 @@ typedef enum		e_file_arch
 	x86_64_OTOOL,
 	UNKNOWN,
 	UNKNOWN_OTOOL
-}					t_e_file_arch;
+}			t_e_file_arch;
 
 typedef enum		e_types
 {
@@ -64,73 +64,73 @@ typedef enum		e_types
 	U_TYPE,
 	S_TYPE,
 	UNKNOWN_T
-}					t_e_types;
+}			t_e_types;
 
 typedef enum		e_print_info
 {
-	HEX_BASE = 16,
-	x86_BASE_ZERO = 9,
+	HEX_BASE	 = 16,
+	x86_BASE_ZERO	 = 9,
 	x86_64_BASE_ZERO = 17
-}					t_e_print_info;
+}			t_e_print_info;
 
-typedef	struct		s_segment_info
+typedef	struct			s_segment_info
 {
-	int						s_num;
-	char					*name;
+	int			s_num;
+	char			*name;
 	struct s_segment_info	*next;
-}					t_segment_info;
+}				t_segment_info;
 
-typedef struct		s_macho_info
+typedef struct			s_macho_info
 {
-	char				type;
-	char				displayable;
-	int					arch;
+	char			type;
+	char			displayable;
+	int			arch;
 	unsigned long		value;
-	char				*name;
+	char			*name;
 	struct s_macho_info	*next;
-}					t_macho_info;
+} 				t_macho_info;
 
-typedef struct		s_x86
+typedef struct				s_x86
 {
-	int							arch;
-	uint32_t					ncmds;
-	uint32_t					nsects;
+	int				arch;
+	uint32_t			ncmds;
+	uint32_t			nsects;
 
-	struct nlist				*el;
-	struct section				*sect;
-	struct load_command			*lc;
-	struct mach_header			*header;
+	struct nlist			*el;
+	struct section			*sect;
+	struct load_command		*lc;
+	struct mach_header		*header;
 	struct symtab_command		*sym;
 	struct segment_command		*seg;
 
-	t_segment_info				*seg_info;
-	t_macho_info				*obj;
+	t_segment_info			*seg_info;
+	t_macho_info			*obj;
 }					t_x86;
 
-typedef struct		s_x86_64
+typedef struct				s_x86_64
 {
-	int							arch;
-	uint32_t					ncmds;
-	uint32_t					nsects;
+	int				arch;
+	uint32_t			ncmds;
+	uint32_t			nsects;
 
-	struct nlist_64				*el;
-	struct section_64			*sect;
-	struct load_command			*lc;
+	struct nlist_64			*el;
+	struct section_64		*sect;
+	struct load_command		*lc;
 	struct symtab_command		*sym;
 	struct mach_header_64		*header;
 	struct segment_command_64	*seg;
 
-	t_segment_info				*seg_info;
-	t_macho_info				*obj;
+	t_segment_info			*seg_info;
+	t_macho_info			*obj;
 }					t_x86_64;
 
-typedef struct		s_macho
+typedef struct				s_macho
 {
-	int					fd;
-	int					args_num;
-	int					ptr_size;
-	int					fat;
-	int					arch;
+	int				fd;
+	int				args_num;
+	int				ptr_size;
+	int				fat;
+	int				arch;
 	uint32_t			i;
 
 	t_x86				x86o;
@@ -140,7 +140,7 @@ typedef struct		s_macho
 	void				*max_len;
 	char				*name;
 	struct stat			buf;
-	const unsigned char	*type_charests;
+	const unsigned char		*type_charests;
 
 	uint32_t			program;
 	void				(*handle_arch[7])(void *ptr,
@@ -152,31 +152,31 @@ size_t				ft_strlen(const char *str);
 char				*ft_strdup(const char *str);
 void				ft_putchar(char c);
 void				ft_putstr(const char *str);
-unsigned long		get_len(unsigned long n);
+unsigned long			get_len(unsigned long n);
 void				print_addr(unsigned long n);
 void				put_zeros(int i, unsigned long j);
 void				display_help(t_macho_info *file);
 void				display_nm(t_macho *macho, int ar);
-int					ft_strncmp(const char *s1, const char *s2, size_t n);
-int					ft_strcmp(const char *s1, const char *s2);
-int					ft_toupper(int c);
+int				ft_strncmp(const char *s1, const char *s2, size_t n);
+int				ft_strcmp(const char *s1, const char *s2);
+int				ft_toupper(int c);
 char				*ft_itoa_base(int val, int base, int output_size);
 char				read_tab(int i);
 
-int					mmap_obj(t_macho *macho, int prog);
-int					get_file(char *file, t_macho *macho, int prog);
+int				mmap_obj(t_macho *macho, int prog);
+int				get_file(char *file, t_macho *macho, int prog);
 void				reinit_obj(t_macho *macho, int part);
 void				init(t_macho *obj, uint32_t prog);
-int					with_args(int argc, char **argv, t_macho *macho, int prog);
-int					no_args(t_macho *macho, int prog);
+int				with_args(int argc, char **argv, t_macho *macho, int prog);
+int				no_args(t_macho *macho, int prog);
 
 void				make_order_align(t_macho_info **file, t_macho_info *tmp);
 
 void				handle_x86_64_arch(void *ptr, t_macho *m);
 char				get_type_by_sect(unsigned char s, t_macho *macho);
 char				get_type(unsigned char c, unsigned char s, t_macho *macho,
-							unsigned long n_value);
-int					set_arch(void *ptr, t_macho *macho);
+					unsigned long n_value);
+int				set_arch(void *ptr, t_macho *macho);
 void				handle_fat(void *ptr, t_macho *macho);
 void				handle_x86_arch(void *ptr, t_macho *macho);
 void				ot_x86_64_handle(void *ptr, struct s_macho *macho);
@@ -184,9 +184,9 @@ void				ot_x86_handle(void *ptr, struct s_macho *macho);
 
 void				unknown_nm(void *ptr, t_macho *macho);
 void				unknown_otool(void *ptr, t_macho *macho);
-int					check_malformed(void *ptr, t_macho *macho);
-int					help_for_otool64(t_macho *macho);
-int					help_for_otool32(t_macho *macho);
-int					help_for_handle64(t_macho *macho, void *ptr);
+int				check_malformed(void *ptr, t_macho *macho);
+int				help_for_otool64(t_macho *macho);
+int				help_for_otool32(t_macho *macho);
+int				help_for_handle64(t_macho *macho, void *ptr);
 
 #endif
